@@ -1,0 +1,890 @@
+﻿@{
+    ViewData["Title"] = "Teacher Profile";
+}
+
+<div class="teacher-profile-page">
+
+    <div class="teacher-profile-header">
+        <h1>My Profile</h1>
+        <p>View and update your personal information.</p>
+    </div>
+
+    <div id="profileMessage" class="profile-message"></div>
+
+    <div class="teacher-profile-card">
+
+        <!-- PROFILE IMAGE -->
+
+        <div class="teacher-profile-image-section">
+
+            <div id="profileImageContainer"
+                 class="teacher-profile-initial">
+                T
+            </div>
+
+            <div class="teacher-image-info">
+
+                <h2 id="profileDisplayName">
+                    Teacher
+                </h2>
+
+                <p>
+                    Upload your profile picture.
+                </p>
+
+                <label for="profileImageInput"
+                       class="upload-button">
+                    📷 Change Profile Picture
+                </label>
+
+                <input type="file"
+                       id="profileImageInput"
+                       accept="image/jpeg,image/png,image/webp" />
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE FORM -->
+
+        <form id="teacherProfileForm">
+
+            <div class="teacher-profile-form">
+
+                <div class="teacher-form-group">
+
+                    <label for="teacherName">
+                        Name
+                    </label>
+
+                    <input type="text"
+                           id="teacherName"
+                           required />
+
+                </div>
+
+
+                <div class="teacher-form-group">
+
+                    <label for="teacherEmail">
+                        Email
+                    </label>
+
+                    <input type="email"
+                           id="teacherEmail"
+                           required />
+
+                </div>
+
+
+                <div class="teacher-form-group">
+
+                    <label for="teacherPhone">
+                        Phone
+                    </label>
+
+                    <input type="text"
+                           id="teacherPhone"
+                           maxlength="10"
+                           pattern="[0-9]{10}"
+                           required />
+
+                    <small>
+                        Enter a valid 10-digit phone number.
+                    </small>
+
+                </div>
+
+
+                <div class="teacher-form-group">
+
+                    <label for="teacherId">
+                        Teacher ID
+                    </label>
+
+                    <input type="text"
+                           id="teacherId"
+                           readonly />
+
+                    <small>
+                        Teacher ID cannot be changed.
+                    </small>
+
+                </div>
+
+
+                <div class="teacher-form-group">
+
+                    <label for="teacherRole">
+                        Role
+                    </label>
+
+                    <input type="text"
+                           id="teacherRole"
+                           value="TEACHER"
+                           readonly />
+
+                </div>
+
+            </div>
+
+
+            <div class="teacher-profile-actions">
+
+                <button type="submit"
+                        id="saveProfileButton">
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .teacher-profile-page {
+        padding: 30px;
+        background: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .teacher-profile-header {
+        margin-bottom: 25px;
+    }
+
+        .teacher-profile-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .teacher-profile-header p {
+            margin-top: 6px;
+            color: #6b7280;
+        }
+
+    .teacher-profile-card {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .teacher-profile-image-section {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        padding-bottom: 25px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .teacher-profile-initial {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+        border-radius: 50%;
+        background: #4f46e5;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        font-weight: 700;
+        overflow: hidden;
+    }
+
+    .teacher-profile-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .teacher-image-info h2 {
+        margin: 0 0 6px;
+        color: #111827;
+    }
+
+    .teacher-image-info p {
+        color: #6b7280;
+        margin-bottom: 14px;
+    }
+
+    #profileImageInput {
+        display: none;
+    }
+
+    .upload-button {
+        display: inline-block;
+        padding: 9px 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        background: white;
+    }
+
+        .upload-button:hover {
+            background: #f3f4f6;
+        }
+
+    .teacher-profile-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .teacher-form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .teacher-form-group label {
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .teacher-form-group input {
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+            .teacher-form-group input:focus {
+                border-color: #4f46e5;
+            }
+
+            .teacher-form-group input[readonly] {
+                background: #f3f4f6;
+                color: #6b7280;
+            }
+
+        .teacher-form-group small {
+            margin-top: 5px;
+            color: #9ca3af;
+            font-size: 11px;
+        }
+
+    .teacher-profile-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    #saveProfileButton {
+        border: none;
+        border-radius: 8px;
+        padding: 11px 22px;
+        background: #4f46e5;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        #saveProfileButton:hover {
+            background: #4338ca;
+        }
+
+        #saveProfileButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .profile-message {
+        display: none;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+        .profile-message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .profile-message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+</style>
+
+
+<script>
+
+    const profileToken = localStorage.getItem("jwtToken");
+
+    let currentTeacher = null;
+    let selectedProfileImage = null;
+
+
+    const profileForm =
+        document.getElementById("teacherProfileForm");
+
+    const nameInput =
+        document.getElementById("teacherName");
+
+    const emailInput =
+        document.getElementById("teacherEmail");
+
+    const phoneInput =
+        document.getElementById("teacherPhone");
+
+    const teacherIdInput =
+        document.getElementById("teacherId");
+
+    const teacherRoleInput =
+        document.getElementById("teacherRole");
+
+    const profileImageInput =
+        document.getElementById("profileImageInput");
+
+    const profileImageContainer =
+        document.getElementById("profileImageContainer");
+
+    const profileDisplayName =
+        document.getElementById("profileDisplayName");
+
+    const saveProfileButton =
+        document.getElementById("saveProfileButton");
+
+    const profileMessage =
+        document.getElementById("profileMessage");
+
+
+    // ==========================================
+    // MESSAGE
+    // ==========================================
+
+    function showMessage(message, type) {
+
+        profileMessage.textContent = message;
+
+        profileMessage.className =
+            "profile-message " + type;
+
+        profileMessage.style.display = "block";
+
+        setTimeout(function() {
+
+            profileMessage.style.display = "none";
+
+        }, 4000);
+
+    }
+
+
+    // ==========================================
+    // INITIAL
+    // ==========================================
+
+    function getInitial(name) {
+
+        if (!name || name.trim() === "") {
+            return "T";
+        }
+
+        return name.trim().charAt(0).toUpperCase();
+
+    }
+
+
+    // ==========================================
+    // DISPLAY IMAGE
+    // ==========================================
+
+    function displayProfileImage(image, name) {
+
+        if (!image || image.trim() === "") {
+
+            profileImageContainer.className =
+                "teacher-profile-initial";
+
+            profileImageContainer.textContent =
+                getInitial(name);
+
+            return;
+        }
+
+
+        profileImageContainer.className =
+            "teacher-profile-initial";
+
+        profileImageContainer.innerHTML = "";
+
+
+        const img =
+            document.createElement("img");
+
+        img.src = image;
+
+        img.alt = "Teacher Profile";
+
+        img.className =
+            "teacher-profile-image";
+
+
+        img.onerror = function() {
+
+            profileImageContainer.innerHTML =
+                getInitial(name);
+
+        };
+
+
+        profileImageContainer.appendChild(img);
+
+    }
+
+
+    // ==========================================
+    // LOAD PROFILE
+    // ==========================================
+
+    async function loadProfile() {
+
+        if (!profileToken) {
+
+            window.location.href =
+                "/Auth/Login";
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/teachers/me",
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization":
+                                "Bearer " + profileToken
+                        }
+                    }
+                );
+
+
+            if (response.status === 401 ||
+                response.status === 403) {
+
+                localStorage.removeItem("jwtToken");
+                localStorage.removeItem("loggedInUser");
+
+                window.location.href =
+                    "/Auth/Login";
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load teacher profile."
+                );
+
+            }
+
+
+            currentTeacher =
+                await response.json();
+
+
+            nameInput.value =
+                currentTeacher.name || "";
+
+            emailInput.value =
+                currentTeacher.email || "";
+
+            phoneInput.value =
+                currentTeacher.phone || "";
+
+            teacherIdInput.value =
+                currentTeacher.teacherId || "";
+
+            teacherRoleInput.value =
+                "TEACHER";
+
+
+            profileDisplayName.textContent =
+                currentTeacher.name || "Teacher";
+
+
+            displayProfileImage(
+                currentTeacher.profileImage,
+                currentTeacher.name
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Profile loading error:",
+                error
+            );
+
+            showMessage(
+                error.message ||
+                "Unable to load profile.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // IMAGE SELECT
+    // ==========================================
+
+    profileImageInput.addEventListener(
+        "change",
+        function(event) {
+
+            const file =
+                event.target.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            if (file.size > 2 * 1024 * 1024) {
+
+                showMessage(
+                    "Profile image must be smaller than 2 MB.",
+                    "error"
+                );
+
+                profileImageInput.value = "";
+
+                return;
+
+            }
+
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+
+            if (!allowedTypes.includes(file.type)) {
+
+                showMessage(
+                    "Please select a JPG, PNG or WEBP image.",
+                    "error"
+                );
+
+                profileImageInput.value = "";
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(eventResult) {
+
+                    selectedProfileImage =
+                        eventResult.target.result;
+
+
+                    displayProfileImage(
+                        selectedProfileImage,
+                        nameInput.value
+                    );
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+
+    // ==========================================
+    // SAVE PROFILE
+    // ==========================================
+
+    profileForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const name =
+                nameInput.value.trim();
+
+            const email =
+                emailInput.value.trim();
+
+            const phone =
+                phoneInput.value.trim();
+
+
+            if (!name) {
+
+                showMessage(
+                    "Please enter your name.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!email) {
+
+                showMessage(
+                    "Please enter your email.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!phone.match(/^[0-9]{10}$/)) {
+
+                showMessage(
+                    "Please enter a valid 10-digit phone number.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            saveProfileButton.disabled = true;
+
+            saveProfileButton.textContent =
+                "Saving...";
+
+
+            try {
+
+                let imageToSave = null;
+
+
+                if (selectedProfileImage) {
+
+                    imageToSave =
+                        selectedProfileImage;
+
+                }
+                else if (
+                    currentTeacher &&
+                    currentTeacher.profileImage
+                ) {
+
+                    imageToSave =
+                        currentTeacher.profileImage;
+
+                }
+
+
+                const requestData = {
+
+                    name: name,
+
+                    email: email,
+
+                    phone: phone,
+
+                    profileImage: imageToSave
+
+                };
+
+
+                const response =
+                    await fetch(
+                        "/api/teachers/me",
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Authorization":
+                                    "Bearer " + profileToken,
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(requestData)
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        "Unable to update profile."
+                    );
+
+                }
+
+
+                currentTeacher =
+                    result;
+
+                selectedProfileImage =
+                    null;
+
+                profileImageInput.value =
+                    "";
+
+
+                nameInput.value =
+                    result.name || "";
+
+                emailInput.value =
+                    result.email || "";
+
+                phoneInput.value =
+                    result.phone || "";
+
+                teacherIdInput.value =
+                    result.teacherId || "";
+
+
+                profileDisplayName.textContent =
+                    result.name || "Teacher";
+
+
+                displayProfileImage(
+                    result.profileImage,
+                    result.name
+                );
+
+
+                // Update local storage
+
+                const storedUser =
+                    localStorage.getItem("loggedInUser");
+
+
+                if (storedUser) {
+
+                    try {
+
+                        const user =
+                            JSON.parse(storedUser);
+
+
+                        user.name =
+                            result.name;
+
+                        user.email =
+                            result.email;
+
+                        user.profileImage =
+                            result.profileImage || "";
+
+
+                        localStorage.setItem(
+                            "loggedInUser",
+                            JSON.stringify(user)
+                        );
+
+                    }
+                    catch (storageError) {
+
+                        console.error(
+                            "Storage update error:",
+                            storageError
+                        );
+
+                    }
+
+                }
+
+
+                showMessage(
+                    "Profile updated successfully.",
+                    "success"
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Profile update error:",
+                    error
+                );
+
+                showMessage(
+                    error.message ||
+                    "Unable to update profile.",
+                    "error"
+                );
+
+            }
+            finally {
+
+                saveProfileButton.disabled =
+                    false;
+
+                saveProfileButton.textContent =
+                    "Save Changes";
+
+            }
+
+        }
+    );
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    loadProfile();
+
+</script>

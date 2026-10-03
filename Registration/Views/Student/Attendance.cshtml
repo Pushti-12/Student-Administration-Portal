@@ -1,0 +1,357 @@
+﻿@{
+    ViewData["Title"] = "My Attendance";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-kicker">
+            MY ACADEMICS
+        </span>
+
+        <h1>
+            My Attendance
+        </h1>
+
+        <p>
+            Track your attendance across classes.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="summary-cards">
+
+    <div class="summary-box">
+
+        <span>
+            Attendance Rate
+        </span>
+
+        <strong id="percentage">
+            —
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Present
+        </span>
+
+        <strong id="present">
+            —
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Absent
+        </span>
+
+        <strong id="absent">
+            —
+        </strong>
+
+    </div>
+
+</div>
+
+
+<section class="card">
+
+    <div class="table-wrap">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Course
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="body">
+
+                <tr>
+
+                    <td colspan="3"
+                        class="loading">
+
+                        Loading attendance...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "loggedInUser"
+            ) || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        user.role.toUpperCase() !== "STUDENT"
+    ) {
+        location.href = "/";
+    }
+
+
+    async function loadAttendance() {
+
+        try {
+
+            const studentResponse =
+                await fetch(
+                    "/api/students/me",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!studentResponse.ok) {
+                throw new Error();
+            }
+
+
+            const student =
+                await studentResponse.json();
+
+
+            localStorage.setItem(
+                "studentId",
+                student.id
+            );
+
+
+            const [
+                attendanceResponse,
+                coursesResponse
+            ] =
+                await Promise.all([
+                    fetch(
+                        `/api/attendance/student/${student.id}`,
+                        {
+                            headers: {
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
+                        }
+                    ),
+
+                    fetch(
+                        "/api/courses",
+                        {
+                            headers: {
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
+                        }
+                    )
+                ]);
+
+
+            if (
+                !attendanceResponse.ok ||
+                !coursesResponse.ok
+            ) {
+                throw new Error();
+            }
+
+
+            const records =
+                await attendanceResponse.json();
+
+
+            const courses =
+                await coursesResponse.json();
+
+
+            const present =
+                records.filter(
+                    a =>
+                        String(a.status)
+                            .toUpperCase() ===
+                        "PRESENT"
+                ).length;
+
+
+            const absent =
+                records.length -
+                present;
+
+
+            const percentage =
+                records.length
+                    ? Math.round(
+                        present *
+                        100 /
+                        records.length
+                    )
+                    : 0;
+
+
+            document.getElementById(
+                "percentage"
+            ).textContent =
+                `${percentage}%`;
+
+
+            document.getElementById(
+                "present"
+            ).textContent =
+                present;
+
+
+            document.getElementById(
+                "absent"
+            ).textContent =
+                absent;
+
+
+            const body =
+                document.getElementById(
+                    "body"
+                );
+
+
+            if (!records.length) {
+
+                body.innerHTML = `
+                        <tr>
+                            <td colspan="3"
+                                class="empty">
+                                No attendance records found.
+                            </td>
+                        </tr>
+                    `;
+
+                return;
+
+            }
+
+
+            body.innerHTML =
+                records.map(
+                    a => {
+
+                        const course =
+                            courses.find(
+                                c =>
+                                    Number(c.id) ===
+                                    Number(a.courseId)
+                            );
+
+
+                        const status =
+                            String(
+                                a.status
+                            ).toUpperCase();
+
+
+                        return `
+
+                                <tr>
+
+                                    <td>
+                                        ${new Date(
+                            a.date
+                        ).toLocaleDateString()}
+                                    </td>
+
+                                    <td>
+                                        ${course
+                                ? `${course.courseName} (${course.courseCode})`
+                                : "N/A"}
+                                    </td>
+
+                                    <td>
+
+                                        <span class="
+                                            badge
+                                            ${status === "PRESENT"
+                                ? "badge-present"
+                                : "badge-absent"}
+                                        ">
+
+                                            ${status}
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                    }
+                ).join("");
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "body"
+            ).innerHTML = `
+                    <tr>
+                        <td colspan="3"
+                            class="error">
+                            Unable to load attendance.
+                        </td>
+                    </tr>
+                `;
+
+        }
+
+    }
+
+
+    loadAttendance();
+
+</script>

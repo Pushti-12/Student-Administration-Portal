@@ -1,0 +1,2394 @@
+﻿@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Student Management System - Register</title>
+
+    <style>
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Arial, sans-serif;
+                background: #f5f7fb;
+                min-height: 100vh;
+                padding: 35px;
+            }
+
+            .account-page {
+                max-width: 1100px;
+                margin: auto;
+            }
+
+            .registration-section {
+                background: #ffffff;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+            }
+
+                .registration-section h1 {
+                    text-align: center;
+                    color: #111827;
+                    margin-bottom: 35px;
+                }
+
+            /* =========================
+                       PROGRESS
+                       ========================= */
+
+            .progress-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 35px;
+            }
+
+            .progress-step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                color: #6b7280;
+                font-size: 13px;
+                text-align: center;
+            }
+
+            .step-number {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                color: #6b7280;
+            }
+
+            .progress-step.active .step-number {
+                background: #4f46e5;
+                color: white;
+            }
+
+            .progress-step.active span {
+                color: #4f46e5;
+                font-weight: 600;
+            }
+
+            .progress-line {
+                width: 100px;
+                height: 2px;
+                background: #e5e7eb;
+                margin: 0 15px;
+            }
+
+            /* =========================
+                       CARDS
+                       ========================= */
+
+            .registration-card {
+                display: none;
+                background: #f9fafb;
+                border: 1px solid #e5e7eb;
+                border-radius: 15px;
+                padding: 30px;
+            }
+
+                .registration-card.active {
+                    display: block;
+                }
+
+                .registration-card h2 {
+                    color: #111827;
+                    font-size: 22px;
+                    margin-bottom: 25px;
+                }
+
+            /* =========================
+                       FORM
+                       ========================= */
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+                .form-group label {
+                    display: block;
+                    color: #374151;
+                    font-size: 14px;
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                }
+
+                    .form-group label span {
+                        color: #dc2626;
+                    }
+
+                .form-group input,
+                .form-group textarea,
+                .form-group select {
+                    width: 100%;
+                    padding: 12px 14px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 9px;
+                    font-size: 14px;
+                    outline: none;
+                    background: white;
+                }
+
+                    .form-group input:focus,
+                    .form-group textarea:focus,
+                    .form-group select:focus {
+                        border-color: #4f46e5;
+                        box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+                    }
+
+                .form-group textarea {
+                    resize: vertical;
+                    min-height: 90px;
+                }
+
+            /* =========================
+                       ROLE / COURSE
+                       ========================= */
+
+            .student-course-section,
+            .teacher-course-section {
+                display: none;
+            }
+
+            .section-note {
+                margin-top: 7px;
+                color: #6b7280;
+                font-size: 12px;
+            }
+
+            .existing-course-row {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 12px;
+                align-items: center;
+            }
+
+                .existing-course-row select {
+                    flex: 1;
+                }
+
+            .remove-existing-course {
+                border: none;
+                background: #fee2e2;
+                color: #b91c1c;
+                padding: 11px 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+                .remove-existing-course:hover {
+                    background: #fecaca;
+                }
+
+            .new-course-list {
+                margin-top: 15px;
+            }
+
+            .new-course-card {
+                background: #ffffff;
+                border: 1px solid #d1d5db;
+                border-radius: 12px;
+                padding: 18px;
+                margin-bottom: 15px;
+            }
+
+            .new-course-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+                .new-course-card-header strong {
+                    color: #111827;
+                    font-size: 14px;
+                }
+
+            .remove-new-course {
+                border: none;
+                background: transparent;
+                color: #dc2626;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+            .new-course-fields {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .add-existing-course-button,
+            .add-new-course-button {
+                border: none;
+                padding: 10px 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                margin-top: 5px;
+            }
+
+            .add-existing-course-button {
+                background: #eef2ff;
+                color: #4f46e5;
+            }
+
+                .add-existing-course-button:hover {
+                    background: #e0e7ff;
+                }
+
+            .add-new-course-button {
+                background: #ecfdf5;
+                color: #047857;
+            }
+
+                .add-new-course-button:hover {
+                    background: #d1fae5;
+                }
+
+            /* =========================
+                       BUTTONS
+                       ========================= */
+
+            .card-buttons {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 25px;
+            }
+
+                .card-buttons.right {
+                    justify-content: flex-end;
+                }
+
+            .back-button,
+            .next-button,
+            .register-button {
+                border: none;
+                padding: 12px 24px;
+                border-radius: 9px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .back-button {
+                background: #e5e7eb;
+                color: #374151;
+            }
+
+            .next-button,
+            .register-button {
+                background: #4f46e5;
+                color: white;
+            }
+
+                .next-button:hover,
+                .register-button:hover {
+                    background: #4338ca;
+                }
+
+            .mandatory-note {
+                margin-top: 20px;
+                color: #6b7280;
+                font-size: 13px;
+                text-align: right;
+            }
+
+            /* =========================
+                       MESSAGE
+                       ========================= */
+
+            .message {
+                display: none;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 9px;
+                font-size: 14px;
+            }
+
+                .message.success {
+                    display: block;
+                    background: #f0fdf4;
+                    border: 1px solid #bbf7d0;
+                    color: #166534;
+                }
+
+                .message.error {
+                    display: block;
+                    background: #fef2f2;
+                    border: 1px solid #fecaca;
+                    color: #b91c1c;
+                }
+
+            /* =========================
+                       LOGIN
+                       ========================= */
+
+            .login-link {
+                text-align: center;
+                margin-top: 25px;
+                font-size: 14px;
+            }
+
+                .login-link a {
+                    color: #4f46e5;
+                    text-decoration: none;
+                    font-weight: 600;
+                }
+
+            /* =========================
+                       RESPONSIVE
+                       ========================= */
+
+            @@media (max-width: 768px) {
+
+                body {
+                    padding: 15px;
+                }
+
+                .registration-section {
+                    padding: 25px;
+                }
+
+                .progress-line {
+                    width: 40px;
+                    margin: 0 7px;
+                }
+
+                .existing-course-row {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .new-course-fields {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="account-page">
+
+        <div class="registration-section">
+
+            <h1>REGISTRATION PAGE</h1>
+
+            <div id="message"
+                 class="message">
+            </div>
+
+
+            <!-- =========================
+             PROGRESS
+             ========================= -->
+
+            <div class="progress-container">
+
+                <div class="progress-step active">
+
+                    <div class="step-number">
+                        1
+                    </div>
+
+                    <span>
+                        Personal Information
+                    </span>
+
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="progress-step">
+
+                    <div class="step-number">
+                        2
+                    </div>
+
+                    <span>
+                        Contact Information
+                    </span>
+
+                </div>
+
+                <div class="progress-line"></div>
+
+                <div class="progress-step">
+
+                    <div class="step-number">
+                        3
+                    </div>
+
+                    <span>
+                        Account Information
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <form id="registrationForm">
+
+                <!-- =========================
+                 STEP 1
+                 ========================= -->
+
+                <div class="registration-card active">
+
+                    <h2>
+                        Step 1: Personal Information
+                    </h2>
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label>
+                            1. Full Name <span>*</span>
+                        </label>
+
+                        <input type="text"
+                               id="name"
+                               placeholder="Enter full name"
+                               required />
+
+                    </div>
+
+
+                    <!-- ROLE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            2. Role <span>*</span>
+                        </label>
+
+                        <select id="role"
+                                required>
+
+                            <option value="">
+                                Select Role
+                            </option>
+
+                            <option value="STUDENT">
+                                Student
+                            </option>
+
+                            <option value="TEACHER">
+                                Teacher
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- =========================
+                     STUDENT COURSE
+                     ========================= -->
+
+                    <div class="form-group student-course-section"
+                         id="studentCourseGroup">
+
+                        <label>
+                            3. Course <span>*</span>
+                        </label>
+
+                        <select id="courseId">
+
+                            <option value="">
+                                Loading courses...
+                            </option>
+
+                        </select>
+
+                        <div class="section-note">
+                            Select one course for the student.
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================
+                     TEACHER COURSES
+                     ========================= -->
+
+                    <div class="form-group teacher-course-section"
+                         id="teacherCourseGroup">
+
+                        <label>
+                            3. Courses <span>*</span>
+                        </label>
+
+
+                        <!-- EXISTING -->
+
+                        <div>
+
+                            <div id="existingCoursesContainer">
+
+                                <div class="existing-course-row">
+
+                                    <select class="existing-course-select">
+
+                                        <option value="">
+                                            Loading courses...
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <button type="button"
+                                    class="add-existing-course-button"
+                                    id="addExistingCourseButton">
+
+                                + Add Existing Course
+
+                            </button>
+
+                            <div class="section-note">
+                                Select courses already available in the system.
+                            </div>
+
+                        </div>
+
+
+                        <!-- NEW -->
+
+                        <div style="margin-top:25px;">
+
+                            <button type="button"
+                                    class="add-new-course-button"
+                                    id="addNewCourseButton">
+
+                                + Add New Course
+
+                            </button>
+
+                            <div class="section-note">
+                                Create a new course and assign it to this teacher.
+                            </div>
+
+
+                            <div id="newCoursesContainer"
+                                 class="new-course-list">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-buttons right">
+
+                        <button type="button"
+                                class="next-button">
+
+                            Next →
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                 STEP 2
+                 ========================= -->
+
+                <div class="registration-card">
+
+                    <h2>
+                        Step 2: Contact Information
+                    </h2>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label>
+                            4. Email <span>*</span>
+                        </label>
+
+                        <input type="email"
+                               id="email"
+                               placeholder="Enter email"
+                               />
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+                        <label>
+                            5. Mobile Number <span>*</span>
+                        </label>
+
+                        <input type="tel"
+                               id="phone"
+                               placeholder="Enter 10-digit mobile number"
+                               maxlength="10"
+                               minlength="10"
+                               inputmode="numeric"
+                               autocomplete="tel">
+
+                        <small id="phoneError" class="error-message"></small>
+                    </div>
+
+                    <style>
+                                            .form-group {
+                                                margin-bottom: 15px;
+                                            }
+
+                                            #phone {
+                                                width: 100%;
+                                                padding: 10px;
+                                                border: 1px solid #ccc;
+                                                border-radius: 4px;
+                                            }
+
+                                                #phone.error {
+                                                    border-color: #dc3545;
+                                                }
+
+                                                #phone.valid {
+                                                    border-color: #28a745;
+                                                }
+
+                                            .error-message {
+                                                display: block;
+                                                color: #dc3545;
+                                                font-size: 13px;
+                                                margin-top: 5px;
+                                            }
+                    </style>
+
+                    <script>
+                                            const phone = document.getElementById("phone");
+                                            const phoneError = document.getElementById("phoneError");
+
+                                            phone.addEventListener("input", function() {
+
+                                                // Allow only numbers
+                                                this.value = this.value.replace(/[^0-9]/g, '');
+
+                                                const value = this.value;
+
+                                                if (value.length === 0) {
+                                                    phoneError.textContent = "Mobile number is required.";
+                                                    phone.classList.add("error");
+                                                    phone.classList.remove("valid");
+
+                                                } else if (value.length < 10) {
+                                                    phoneError.textContent = "Please enter a 10-digit mobile number.";
+                                                    phone.classList.add("error");
+                                                    phone.classList.remove("valid");
+
+                                                } else {
+                                                    phoneError.textContent = "";
+                                                    phone.classList.remove("error");
+                                                    phone.classList.add("valid");
+                                                }
+                                            });
+                    </script>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            6. Address <span>*</span>
+                        </label>
+
+                        <textarea id="address"
+                                  placeholder="Enter address"
+                                  required></textarea>
+
+                    </div>
+
+
+                    <div class="card-buttons">
+
+                        <button type="button"
+                                class="back-button">
+
+                            ← Back
+
+                        </button>
+
+                        <button type="button"
+                                class="next-button">
+
+                            Next →
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                 STEP 3
+                 ========================= -->
+
+                <div class="registration-card">
+
+                    <h2>
+                        Step 3: Account Information
+                    </h2>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label>
+                            7. Password <span>*</span>
+                        </label>
+
+                        <input type="password"
+                               id="password"
+                               placeholder="Enter password"
+                               required />
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label>
+                            8. Confirm Password <span>*</span>
+                        </label>
+
+                        <input type="password"
+                               id="confirmPassword"
+                               placeholder="Confirm password"
+                               required />
+
+                    </div>
+
+
+                    <div class="card-buttons">
+
+                        <button type="button"
+                                class="back-button">
+
+                            ← Back
+
+                        </button>
+
+                        <button type="submit"
+                                class="register-button"
+                                id="registerButton">
+
+                            Register
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <div class="mandatory-note">
+                * All required fields are mandatory.
+            </div>
+
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a href="/Auth/Login">
+                    Login here
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+            /* =========================================
+               STATE
+               ========================================= */
+
+            let currentStep = 0;
+
+            let availableCourses = [];
+
+
+            /* =========================================
+               ELEMENTS
+               ========================================= */
+
+            const cards =
+                document.querySelectorAll(
+                    ".registration-card"
+                );
+
+            const steps =
+                document.querySelectorAll(
+                    ".progress-step"
+                );
+
+            const roleSelect =
+                document.getElementById(
+                    "role"
+                );
+
+            const studentCourseGroup =
+                document.getElementById(
+                    "studentCourseGroup"
+                );
+
+            const teacherCourseGroup =
+                document.getElementById(
+                    "teacherCourseGroup"
+                );
+
+            const courseId =
+                document.getElementById(
+                    "courseId"
+                );
+
+            const existingCoursesContainer =
+                document.getElementById(
+                    "existingCoursesContainer"
+                );
+
+            const addExistingCourseButton =
+                document.getElementById(
+                    "addExistingCourseButton"
+                );
+
+            const addNewCourseButton =
+                document.getElementById(
+                    "addNewCourseButton"
+                );
+
+            const newCoursesContainer =
+                document.getElementById(
+                    "newCoursesContainer"
+                );
+
+            const message =
+                document.getElementById(
+                    "message"
+                );
+
+            const phoneInput =
+                document.getElementById(
+                    "phone"
+                );
+
+
+            /* =========================================
+               PHONE INPUT
+               Only digits and max 10
+               ========================================= */
+
+            phoneInput.addEventListener(
+                "input",
+                function() {
+
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+
+                }
+            );
+
+
+            /* =========================================
+               STEP
+               ========================================= */
+
+            function showStep(index) {
+
+                cards.forEach(
+                    function(card, i) {
+
+                        card.classList.toggle(
+                            "active",
+                            i === index
+                        );
+
+                    }
+                );
+
+
+                steps.forEach(
+                    function(step, i) {
+
+                        step.classList.toggle(
+                            "active",
+                            i <= index
+                        );
+
+                    }
+                );
+
+
+                currentStep = index;
+
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+
+
+            /* =========================================
+               MESSAGE
+               ========================================= */
+
+            function clearMessage() {
+
+                message.className =
+                    "message";
+
+                message.innerText =
+                    "";
+
+            }
+
+
+            function showError(text) {
+
+                message.className =
+                    "message error";
+
+                message.innerText =
+                    text;
+
+            }
+
+
+            /* =========================================
+               VALIDATE STEP
+               ========================================= */
+
+            function validateCurrentStep() {
+
+                const currentCard =
+                    cards[currentStep];
+
+
+                const requiredFields =
+                    currentCard.querySelectorAll(
+                        "input[required], select[required], textarea[required]"
+                    );
+
+
+                for (
+                    const field
+                    of requiredFields
+                ) {
+
+                    if (
+                        !String(field.value).trim()
+                    ) {
+
+                        field.reportValidity();
+
+                        return false;
+
+                    }
+
+                }
+
+
+                /* STEP 1 */
+
+                if (currentStep === 0) {
+
+                    if (!roleSelect.value) {
+
+                        showError(
+                            "Please select a role."
+                        );
+
+                        return false;
+
+                    }
+
+
+                    /* STUDENT */
+
+                    if (
+                        roleSelect.value === "STUDENT"
+                        &&
+                        !courseId.value
+                    ) {
+
+                        showError(
+                            "Please select a course."
+                        );
+
+                        return false;
+
+                    }
+
+
+                    /* TEACHER */
+
+                    if (
+                        roleSelect.value === "TEACHER"
+                    ) {
+
+                        const existingIds =
+                            getSelectedExistingCourseIds();
+
+                        const newCourses =
+                            getNewCourses();
+
+
+                        if (
+                            existingIds.length === 0
+                            &&
+                            newCourses.length === 0
+                        ) {
+
+                            showError(
+                                "Please select an existing course or add a new course."
+                            );
+
+                            return false;
+
+                        }
+
+
+                        for (
+                            const newCourse
+                            of newCourses
+                        ) {
+
+                            if (
+                                !newCourse.courseName
+                                ||
+                                !newCourse.courseCode
+                            ) {
+
+                                showError(
+                                    "Please complete all new course fields."
+                                );
+
+                                return false;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+                /* STEP 2 */
+
+                if (currentStep === 1) {
+
+                    if (
+                        !/^\d{10}$/.test(
+                            phoneInput.value.trim()
+                        )
+                    ) {
+
+                        showError(
+                            "Please enter a valid 10-digit mobile number."
+                        );
+
+                        phoneInput.focus();
+
+                        return false;
+
+                    }
+
+                }
+
+
+                return true;
+
+            }
+
+
+            /* =========================================
+               NEXT
+               ========================================= */
+
+            document
+                .querySelectorAll(
+                    ".next-button"
+                )
+                .forEach(
+                    function(button) {
+
+                        button.addEventListener(
+                            "click",
+                            function() {
+
+                                clearMessage();
+
+
+                                if (
+                                    !validateCurrentStep()
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                if (
+                                    currentStep <
+                                    cards.length - 1
+                                ) {
+
+                                    showStep(
+                                        currentStep + 1
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            /* =========================================
+               BACK
+               ========================================= */
+
+            document
+                .querySelectorAll(
+                    ".back-button"
+                )
+                .forEach(
+                    function(button) {
+
+                        button.addEventListener(
+                            "click",
+                            function() {
+
+                                clearMessage();
+
+
+                                if (
+                                    currentStep > 0
+                                ) {
+
+                                    showStep(
+                                        currentStep - 1
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            /* =========================================
+               ROLE CHANGE
+               ========================================= */
+
+            roleSelect.addEventListener(
+                "change",
+                function() {
+
+                    clearMessage();
+
+
+                    if (
+                        this.value === "STUDENT"
+                    ) {
+
+                        studentCourseGroup.style.display =
+                            "block";
+
+                        teacherCourseGroup.style.display =
+                            "none";
+
+                        courseId.required =
+                            true;
+
+                    }
+
+                    else if (
+                        this.value === "TEACHER"
+                    ) {
+
+                        studentCourseGroup.style.display =
+                            "none";
+
+                        teacherCourseGroup.style.display =
+                            "block";
+
+                        courseId.required =
+                            false;
+
+                        courseId.value =
+                            "";
+
+                    }
+
+                    else {
+
+                        studentCourseGroup.style.display =
+                            "none";
+
+                        teacherCourseGroup.style.display =
+                            "none";
+
+                        courseId.required =
+                            false;
+
+                        courseId.value =
+                            "";
+
+                    }
+
+                }
+            );
+
+
+            /* =========================================
+               COURSE DISPLAY
+               ========================================= */
+
+            function getCourseDisplayText(course) {
+
+                const name =
+                    course.courseName ||
+                    "Unnamed Course";
+
+                const code =
+                    course.courseCode ||
+                    "N/A";
+
+                const teacher =
+                    course.teacherName ||
+                    "Not Assigned";
+
+
+                return `${name} (${code}) - ${teacher}`;
+
+            }
+
+
+            /* =========================================
+               LOAD COURSES
+               ========================================= */
+
+            async function loadCourses() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/courses"
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            `Unable to load courses. Status: ${response.status}`
+                        );
+
+                    }
+
+
+                    availableCourses =
+                        await response.json();
+
+
+                    loadStudentCourseDropdown();
+
+                    loadExistingCourseDropdowns();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Course loading error:",
+                        error
+                    );
+
+
+                    courseId.innerHTML =
+                        `<option value="">
+                                Unable to load courses
+                             </option>`;
+
+
+                    document
+                        .querySelectorAll(
+                            ".existing-course-select"
+                        )
+                        .forEach(
+                            function(select) {
+
+                                select.innerHTML =
+                                    `<option value="">
+                                            Unable to load courses
+                                         </option>`;
+
+                            }
+                        );
+
+                }
+
+            }
+
+
+            /* =========================================
+               STUDENT COURSE
+               ========================================= */
+
+            function loadStudentCourseDropdown() {
+
+                courseId.innerHTML =
+                    `<option value="">
+                            Select Course
+                         </option>`;
+
+
+                availableCourses.forEach(
+                    function(course) {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            course.id;
+
+
+                        option.textContent =
+                            getCourseDisplayText(
+                                course
+                            );
+
+
+                        courseId.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =========================================
+               EXISTING COURSE DROPDOWN
+               ========================================= */
+
+            function createExistingCourseSelect() {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+                row.className =
+                    "existing-course-row";
+
+
+                const select =
+                    document.createElement(
+                        "select"
+                    );
+
+                select.className =
+                    "existing-course-select";
+
+
+                select.innerHTML =
+                    `<option value="">
+                            Select Course
+                         </option>`;
+
+
+                availableCourses.forEach(
+                    function(course) {
+
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            course.id;
+
+
+                        option.textContent =
+                            getCourseDisplayText(
+                                course
+                            );
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+                );
+
+
+                row.appendChild(
+                    select
+                );
+
+
+                const existingRows =
+                    existingCoursesContainer
+                        .querySelectorAll(
+                            ".existing-course-row"
+                        );
+
+
+                /* First row doesn't show Remove */
+
+                if (
+                    existingRows.length > 0
+                ) {
+
+                    const removeButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    removeButton.type =
+                        "button";
+
+                    removeButton.className =
+                        "remove-existing-course";
+
+                    removeButton.innerText =
+                        "Remove";
+
+
+                    removeButton.addEventListener(
+                        "click",
+                        function() {
+
+                            row.remove();
+
+                            updateExistingCourseOptions();
+
+                        }
+                    );
+
+
+                    row.appendChild(
+                        removeButton
+                    );
+
+                }
+
+
+                existingCoursesContainer.appendChild(
+                    row
+                );
+
+
+                updateExistingCourseOptions();
+
+            }
+
+
+            function loadExistingCourseDropdowns() {
+
+                existingCoursesContainer.innerHTML =
+                    "";
+
+                createExistingCourseSelect();
+
+            }
+
+
+            /* =========================================
+               ADD EXISTING
+               ========================================= */
+
+            addExistingCourseButton.addEventListener(
+                "click",
+                function() {
+
+                    createExistingCourseSelect();
+
+                }
+            );
+
+
+            /* =========================================
+               EXISTING COURSE FILTER
+               Prevent duplicate selections
+               ========================================= */
+
+            existingCoursesContainer.addEventListener(
+                "change",
+                updateExistingCourseOptions
+            );
+
+
+            function updateExistingCourseOptions() {
+
+                const selects =
+                    existingCoursesContainer
+                        .querySelectorAll(
+                            ".existing-course-select"
+                        );
+
+
+                const selectedValues =
+                    Array.from(selects)
+                        .map(
+                            function(select) {
+                                return select.value;
+                            }
+                        )
+                        .filter(
+                            function(value) {
+                                return value !== "";
+                            }
+                        );
+
+
+                selects.forEach(
+                    function(select) {
+
+                        Array.from(
+                            select.options
+                        ).forEach(
+                            function(option) {
+
+                                if (
+                                    option.value === ""
+                                ) {
+
+                                    option.disabled =
+                                        false;
+
+                                    return;
+
+                                }
+
+
+                                option.disabled =
+                                    selectedValues.includes(
+                                        option.value
+                                    )
+                                    &&
+                                    option.value !==
+                                    select.value;
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+
+
+            function getSelectedExistingCourseIds() {
+
+                const selects =
+                    existingCoursesContainer
+                        .querySelectorAll(
+                            ".existing-course-select"
+                        );
+
+
+                return Array.from(selects)
+                    .map(
+                        function(select) {
+
+                            return Number(
+                                select.value
+                            );
+
+                        }
+                    )
+                    .filter(
+                        function(id) {
+
+                            return id > 0;
+
+                        }
+                    );
+
+            }
+
+
+            /* =========================================
+               NEW COURSE
+               ========================================= */
+
+            addNewCourseButton.addEventListener(
+                "click",
+                createNewCourseCard
+            );
+
+
+            function createNewCourseCard() {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "new-course-card";
+
+
+                const header =
+                    document.createElement(
+                        "div"
+                    );
+
+                header.className =
+                    "new-course-card-header";
+
+
+                const title =
+                    document.createElement(
+                        "strong"
+                    );
+
+
+                const count =
+                    newCoursesContainer
+                        .querySelectorAll(
+                            ".new-course-card"
+                        )
+                        .length + 1;
+
+
+                title.innerText =
+                    `New Course ${count}`;
+
+
+                const removeButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                removeButton.type =
+                    "button";
+
+                removeButton.className =
+                    "remove-new-course";
+
+                removeButton.innerText =
+                    "Remove";
+
+
+                removeButton.addEventListener(
+                    "click",
+                    function() {
+
+                        card.remove();
+
+                        refreshNewCourseTitles();
+
+                    }
+                );
+
+
+                header.appendChild(
+                    title
+                );
+
+                header.appendChild(
+                    removeButton
+                );
+
+
+                const fields =
+                    document.createElement(
+                        "div"
+                    );
+
+                fields.className =
+                    "new-course-fields";
+
+
+                /* COURSE NAME */
+
+                const nameGroup =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                const nameLabel =
+                    document.createElement(
+                        "label"
+                    );
+
+                nameLabel.innerText =
+                    "Course Name";
+
+
+                const nameInput =
+                    document.createElement(
+                        "input"
+                    );
+
+                nameInput.type =
+                    "text";
+
+                nameInput.className =
+                    "new-course-name";
+
+                nameInput.placeholder =
+                    "Enter course name";
+
+
+                nameGroup.appendChild(
+                    nameLabel
+                );
+
+                nameGroup.appendChild(
+                    nameInput
+                );
+
+
+                /* COURSE CODE */
+
+                const codeGroup =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                const codeLabel =
+                    document.createElement(
+                        "label"
+                    );
+
+                codeLabel.innerText =
+                    "Course Code";
+
+
+                const codeInput =
+                    document.createElement(
+                        "input"
+                    );
+
+                codeInput.type =
+                    "text";
+
+                codeInput.className =
+                    "new-course-code";
+
+                codeInput.placeholder =
+                    "Enter course code";
+
+
+                codeGroup.appendChild(
+                    codeLabel
+                );
+
+                codeGroup.appendChild(
+                    codeInput
+                );
+
+
+                fields.appendChild(
+                    nameGroup
+                );
+
+                fields.appendChild(
+                    codeGroup
+                );
+
+
+                card.appendChild(
+                    header
+                );
+
+                card.appendChild(
+                    fields
+                );
+
+
+                newCoursesContainer.appendChild(
+                    card
+                );
+
+            }
+
+
+            function refreshNewCourseTitles() {
+
+                const cards =
+                    newCoursesContainer
+                        .querySelectorAll(
+                            ".new-course-card"
+                        );
+
+
+                cards.forEach(
+                    function(card, index) {
+
+                        const title =
+                            card.querySelector(
+                                "strong"
+                            );
+
+
+                        if (title) {
+
+                            title.innerText =
+                                `New Course ${index + 1}`;
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            function getNewCourses() {
+
+                const cards =
+                    newCoursesContainer
+                        .querySelectorAll(
+                            ".new-course-card"
+                        );
+
+
+                return Array.from(cards)
+                    .map(
+                        function(card) {
+
+                            const nameInput =
+                                card.querySelector(
+                                    ".new-course-name"
+                                );
+
+                            const codeInput =
+                                card.querySelector(
+                                    ".new-course-code"
+                                );
+
+
+                            return {
+
+                                courseName:
+                                    nameInput
+                                        ? nameInput.value.trim()
+                                        : "",
+
+                                courseCode:
+                                    codeInput
+                                        ? codeInput.value.trim()
+                                        : ""
+
+                            };
+
+                        }
+                    )
+                    .filter(
+                        function(course) {
+
+                            return (
+                                course.courseName !== ""
+                                ||
+                                course.courseCode !== ""
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            /* =========================================
+               INITIAL LOAD
+               ========================================= */
+
+            loadCourses();
+
+
+            /* =========================================
+               SUBMIT
+               ========================================= */
+
+            document
+                .getElementById(
+                    "registrationForm"
+                )
+                .addEventListener(
+                    "submit",
+                    async function(event) {
+
+                        event.preventDefault();
+
+                        clearMessage();
+
+
+                        const password =
+                            document
+                                .getElementById(
+                                    "password"
+                                )
+                                .value;
+
+
+                        const confirmPassword =
+                            document
+                                .getElementById(
+                                    "confirmPassword"
+                                )
+                                .value;
+
+
+                        const role =
+                            roleSelect.value;
+
+
+                        const phone =
+                            phoneInput.value.trim();
+
+
+                        const registerButton =
+                            document
+                                .getElementById(
+                                    "registerButton"
+                                );
+
+
+                        /* =========================
+                           PHONE VALIDATION
+                           ========================= */
+
+                        if (
+                            !/^\d{10}$/.test(
+                                phone
+                            )
+                        ) {
+
+                            showError(
+                                "Please enter a valid 10-digit mobile number."
+                            );
+
+                            showStep(1);
+
+                            phoneInput.focus();
+
+                            return;
+
+                        }
+
+
+                        /* =========================
+                           PASSWORD
+                           ========================= */
+
+                        if (
+                            password !==
+                            confirmPassword
+                        ) {
+
+                            showError(
+                                "Passwords do not match."
+                            );
+
+                            showStep(2);
+
+                            return;
+
+                        }
+
+
+                        /* =========================
+                           ROLE
+                           ========================= */
+
+                        if (!role) {
+
+                            showError(
+                                "Please select a role."
+                            );
+
+                            showStep(0);
+
+                            return;
+
+                        }
+
+
+                        /* =========================
+                           STUDENT
+                           ========================= */
+
+                        if (
+                            role === "STUDENT"
+                            &&
+                            !courseId.value
+                        ) {
+
+                            showError(
+                                "Please select a course."
+                            );
+
+                            showStep(0);
+
+                            return;
+
+                        }
+
+
+                        /* =========================
+                           TEACHER
+                           ========================= */
+
+                        const existingCourseIds =
+                            getSelectedExistingCourseIds();
+
+
+                        const newCourses =
+                            getNewCourses();
+
+
+                        if (
+                            role === "TEACHER"
+                            &&
+                            existingCourseIds.length === 0
+                            &&
+                            newCourses.length === 0
+                        ) {
+
+                            showError(
+                                "Please select an existing course or add a new course."
+                            );
+
+                            showStep(0);
+
+                            return;
+
+                        }
+
+
+                        if (
+                            role === "TEACHER"
+                        ) {
+
+                            for (
+                                const newCourse
+                                of newCourses
+                            ) {
+
+                                if (
+                                    !newCourse.courseName
+                                    ||
+                                    !newCourse.courseCode
+                                ) {
+
+                                    showError(
+                                        "Please complete all new course fields."
+                                    );
+
+                                    showStep(0);
+
+                                    return;
+
+                                }
+
+                            }
+
+                        }
+
+
+                        /* =========================
+                           REQUEST DATA
+                           ========================= */
+
+                        const requestData = {
+
+                            name:
+                                document
+                                    .getElementById(
+                                        "name"
+                                    )
+                                    .value
+                                    .trim(),
+
+                            email:
+                                document
+                                    .getElementById(
+                                        "email"
+                                    )
+                                    .value
+                                    .trim(),
+
+                            password:
+                                password,
+
+                            role:
+                                role,
+
+                            phone:
+                                phone,
+
+                            address:
+                                document
+                                    .getElementById(
+                                        "address"
+                                    )
+                                    .value
+                                    .trim(),
+
+                            /* Student = one course */
+
+                            courseId:
+                                role === "STUDENT"
+                                    ? Number(
+                                        courseId.value
+                                    )
+                                    : null,
+
+                            /* Teacher = existing courses */
+
+                            courseIds:
+                                role === "TEACHER"
+                                    ? existingCourseIds
+                                    : [],
+
+                            /* Teacher = new courses */
+
+                            newCourses:
+                                role === "TEACHER"
+                                    ? newCourses
+                                    : []
+
+                        };
+
+
+                        console.log(
+                            "Registration Request:",
+                            requestData
+                        );
+
+
+                        registerButton.disabled =
+                            true;
+
+
+                        registerButton.innerText =
+                            "Registering...";
+
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    "/api/auth/register",
+                                    {
+
+                                        method:
+                                            "POST",
+
+                                        headers: {
+
+                                            "Content-Type":
+                                                "application/json"
+
+                                        },
+
+                                        body:
+                                            JSON.stringify(
+                                                requestData
+                                            )
+
+                                    }
+                                );
+
+
+                            const responseText =
+                                await response.text();
+
+
+                            let data = {};
+
+
+                            try {
+
+                                data =
+                                    responseText
+                                        ? JSON.parse(
+                                            responseText
+                                        )
+                                        : {};
+
+                            }
+                            catch {
+
+                                data = {};
+
+                            }
+
+
+                            if (
+                                response.ok
+                            ) {
+
+                                message.className =
+                                    "message success";
+
+                                message.innerText =
+                                    data.message ||
+                                    "Registration successful.";
+
+
+                                document
+                                    .getElementById(
+                                        "registrationForm"
+                                    )
+                                    .reset();
+
+
+                                existingCoursesContainer.innerHTML =
+                                    "";
+
+                                newCoursesContainer.innerHTML =
+                                    "";
+
+
+                                createExistingCourseSelect();
+
+
+                                studentCourseGroup.style.display =
+                                    "none";
+
+                                teacherCourseGroup.style.display =
+                                    "none";
+
+
+                                courseId.required =
+                                    false;
+
+
+                                showStep(0);
+
+
+                                setTimeout(
+                                    function() {
+
+                                        window.location.href =
+                                            "/Auth/Login";
+
+                                    },
+                                    1500
+                                );
+
+                            }
+                            else {
+
+                                message.className =
+                                    "message error";
+
+                                message.innerText =
+                                    data.message ||
+                                    "Registration failed.";
+
+                            }
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                "Registration error:",
+                                error
+                            );
+
+
+                            showError(
+                                "Something went wrong while registering."
+                            );
+
+                        }
+                        finally {
+
+                            registerButton.disabled =
+                                false;
+
+                            registerButton.innerText =
+                                "Register";
+
+                        }
+
+                    }
+                );
+
+    </script>
+
+</body>
+
+</html>

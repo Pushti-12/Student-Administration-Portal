@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "My Marks";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-kicker">
+            MY ACADEMICS
+        </span>
+
+        <h1>
+            Marks & Results
+        </h1>
+
+        <p>
+            View your examination performance.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="summary-cards">
+
+    <div class="summary-box">
+
+        <span>
+            Total Exams
+        </span>
+
+        <strong id="total">
+            —
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Average Marks
+        </span>
+
+        <strong id="average">
+            —
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Highest Marks
+        </span>
+
+        <strong id="highest">
+            —
+        </strong>
+
+    </div>
+
+</div>
+
+
+<section class="card">
+
+    <div class="table-wrap">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Course
+                    </th>
+
+                    <th>
+                        Exam
+                    </th>
+
+                    <th>
+                        Subject
+                    </th>
+
+                    <th>
+                        Marks
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="body">
+
+                <tr>
+
+                    <td colspan="4"
+                        class="loading">
+
+                        Loading marks...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    // ==================================================
+    // AUTHENTICATION
+    // ==================================================
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "loggedInUser"
+            ) || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !== "STUDENT"
+    ) {
+
+        location.href = "/";
+
+    }
+
+
+    // ==================================================
+    // LOAD MARKS
+    // ==================================================
+
+    async function loadMarks() {
+
+        try {
+
+            // ==========================================
+            // GET LOGGED-IN STUDENT
+            // ==========================================
+
+            const studentResponse =
+                await fetch(
+                    "/api/students/me",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!studentResponse.ok) {
+
+                throw new Error(
+                    "Unable to load student profile."
+                );
+
+            }
+
+
+            const student =
+                await studentResponse.json();
+
+
+            localStorage.setItem(
+                "studentId",
+                student.id
+            );
+
+
+            // ==========================================
+            // GET MARKS
+            // ==========================================
+
+            const marksResponse =
+                await fetch(
+                    `/api/marks/student/${student.id}`,
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!marksResponse.ok) {
+
+                throw new Error(
+                    "Unable to load marks."
+                );
+
+            }
+
+
+            const marks =
+                await marksResponse.json();
+
+
+            // ==========================================
+            // SUMMARY
+            // ==========================================
+
+            const values =
+                marks.map(
+                    m =>
+                        Number(
+                            m.marksObtained
+                        )
+                );
+
+
+            const total =
+                values.length;
+
+
+            const average =
+                total
+                    ? Math.round(
+                        values.reduce(
+                            (a, b) =>
+                                a + b,
+                            0
+                        ) / total
+                    )
+                    : 0;
+
+
+            const highest =
+                total
+                    ? Math.max(...values)
+                    : 0;
+
+
+            document.getElementById(
+                "total"
+            ).textContent =
+                total;
+
+
+            document.getElementById(
+                "average"
+            ).textContent =
+                average;
+
+
+            document.getElementById(
+                "highest"
+            ).textContent =
+                highest;
+
+
+            // ==========================================
+            // TABLE
+            // ==========================================
+
+            const body =
+                document.getElementById(
+                    "body"
+                );
+
+
+            if (
+                !Array.isArray(marks) ||
+                marks.length === 0
+            ) {
+
+                body.innerHTML = `
+                        <tr>
+
+                            <td colspan="4"
+                                class="empty">
+
+                                No marks records found.
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                return;
+            }
+
+
+            body.innerHTML =
+                marks
+                    .map(
+                        m => {
+
+                            return `
+
+                                    <tr>
+
+                                        <td>
+                                            ${escapeHtml(
+                                m.courseName || "N/A"
+                            )}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                m.examName || "N/A"
+                            )}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHtml(
+                                m.subjectName || "N/A"
+                            )}
+                                        </td>
+
+                                        <td>
+
+                                            <strong>
+                                                ${m.marksObtained}
+                                            </strong>
+
+                                        </td>
+
+                                    </tr>
+
+                                `;
+
+                        }
+                    )
+                    .join("");
+
+        }
+        catch (error) {
+
+            console.error(
+                "Student marks error:",
+                error
+            );
+
+
+            document.getElementById(
+                "body"
+            ).innerHTML = `
+                    <tr>
+
+                        <td colspan="4"
+                            class="error">
+
+                            Unable to load marks.
+
+                        </td>
+
+                    </tr>
+                `;
+
+        }
+
+    }
+
+
+    // ==================================================
+    // ESCAPE HTML
+    // ==================================================
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // ==================================================
+    // INITIAL LOAD
+    // ==================================================
+
+    loadMarks();
+
+</script>

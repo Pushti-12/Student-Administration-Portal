@@ -1,0 +1,1784 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1" />
+
+    <title>Marks - Admin</title>
+
+
+    <style>
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+
+
+            body {
+                background: #f5f7fb;
+                color: #1f2937;
+            }
+
+
+            .navbar {
+                height: 70px;
+                background: white;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 35px;
+            }
+
+
+            .brand {
+                font-size: 22px;
+                font-weight: 700;
+                color: #2563eb;
+            }
+
+
+            .back {
+                color: #374151;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+
+            .container {
+                max-width: 1200px;
+                margin: auto;
+                padding: 35px;
+            }
+
+
+            .header {
+                margin-bottom: 25px;
+            }
+
+
+                .header p {
+                    color: #6b7280;
+                    margin-top: 6px;
+                }
+
+
+            .card {
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 25px;
+            }
+
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 15px;
+            }
+
+
+            label {
+                display: block;
+                font-weight: 600;
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+
+            input,
+            select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                background: white;
+                outline: none;
+            }
+
+
+                input:focus,
+                select:focus {
+                    border-color: #2563eb;
+                }
+
+
+            button {
+                border: 0;
+                padding: 10px 17px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+
+                button:disabled {
+                    opacity: .6;
+                    cursor: not-allowed;
+                }
+
+
+            .save {
+                background: #2563eb;
+                color: white;
+            }
+
+
+                .save:hover {
+                    background: #1d4ed8;
+                }
+
+
+            /* =========================
+                       DELETE ICON
+                       ========================= */
+
+            .delete-mark-button {
+                background: #dc2626;
+                color: white;
+                width: 34px;
+                height: 34px;
+                padding: 0;
+                border-radius: 6px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+
+                .delete-mark-button:hover {
+                    background: #b91c1c;
+                }
+
+
+                .delete-mark-button svg {
+                    width: 16px;
+                    height: 16px;
+                    pointer-events: none;
+                }
+
+
+            .search-area {
+                display: flex;
+                gap: 10px;
+                max-width: 550px;
+            }
+
+
+            .search-select {
+                flex: 1;
+            }
+
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+
+            th,
+            td {
+                padding: 14px;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left;
+            }
+
+
+            th {
+                background: #f9fafb;
+            }
+
+
+            .message {
+                display: none;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 7px;
+            }
+
+
+            .success {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+
+            .error {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+
+            .empty-row {
+                text-align: center;
+                padding: 30px;
+                color: #6b7280;
+            }
+
+
+            .marks-value {
+                font-weight: 700;
+                color: #2563eb;
+            }
+
+
+            @@media(max-width:1000px) {
+
+                .grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+
+            @@media(max-width:600px) {
+
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+
+                .search-area {
+                    flex-direction: column;
+                    max-width: 100%;
+                }
+            }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="brand">
+            Student Management System
+        </div>
+
+
+        <a href="/Admin/Dashboard"
+           class="back">
+            ← Dashboard
+        </a>
+
+    </nav>
+
+
+    <main class="container">
+
+        <div id="message"
+             class="message">
+        </div>
+
+
+        <div class="header">
+
+            <h1>
+                Marks & Results
+            </h1>
+
+            <p>
+                Add and view student marks.
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             ADD MARKS
+             ========================= -->
+
+        <div class="card">
+
+            <form id="form">
+
+                <div class="grid">
+
+                    <!-- STUDENT -->
+
+                    <div>
+
+                        <label for="studentId">
+                            Student
+                        </label>
+
+                        <select id="studentId"
+                                required>
+
+                            <option value="">
+                                Loading students...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- COURSE -->
+
+                    <div>
+
+                        <label for="courseId">
+                            Course
+                        </label>
+
+                        <select id="courseId"
+                                required>
+
+                            <option value="">
+                                Loading courses...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- EXAM -->
+
+                    <div>
+
+                        <label for="examName">
+                            Exam Name
+                        </label>
+
+                        <input type="text"
+                               id="examName"
+                               required
+                               placeholder="e.g. Mid Term" />
+
+                    </div>
+
+
+                    <!-- SUBJECT -->
+
+                    <div>
+
+                        <label for="subjectId">
+                            Subject
+                        </label>
+
+                        <select id="subjectId"
+                                required
+                                disabled>
+
+                            <option value="">
+                                Select Course First
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MARKS -->
+
+                    <div>
+
+                        <label for="marks">
+                            Marks
+                        </label>
+
+                        <input type="number"
+                               id="marks"
+                               required
+                               min="0"
+                               max="100"
+                               step="0.01"
+                               placeholder="Enter marks" />
+
+                    </div>
+
+                </div>
+
+
+                <br />
+
+
+                <button type="submit"
+                        class="save"
+                        id="saveButton">
+
+                    Add Marks
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =========================
+             STUDENT PERFORMANCE
+             ========================= -->
+
+        <div class="card">
+
+            <h2>
+                Student Performance
+            </h2>
+
+            <br />
+
+
+            <div class="search-area">
+
+                <div class="search-select">
+
+                    <label for="searchStudent">
+                        Select Student
+                    </label>
+
+                    <select id="searchStudent">
+
+                        <option value="">
+                            Select Student
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div style="display:flex;align-items:flex-end">
+
+                    <button type="button"
+                            class="save"
+                            onclick="loadMarks()">
+
+                        View
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <br />
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Course
+                        </th>
+
+                        <th>
+                            Exam
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Marks
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="body">
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="empty-row">
+
+                            Select a student to view marks.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         SWEETALERT2
+         ========================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+
+            // ==================================================
+            // AUTHENTICATION
+            // ==================================================
+
+            const token =
+                localStorage.getItem("jwtToken");
+
+
+            const user =
+                JSON.parse(
+                    localStorage.getItem("loggedInUser") || "null"
+                );
+
+
+            if (
+                !token ||
+                !user ||
+                String(user.role).toUpperCase() !== "ADMIN"
+            ) {
+
+                location.href = "/";
+
+            }
+
+
+            // ==================================================
+            // GLOBAL DATA
+            // ==================================================
+
+            let students = [];
+
+            let courses = [];
+
+
+            // ==================================================
+            // MESSAGE
+            // ==================================================
+
+            function show(text, type) {
+
+                const message =
+                    document.getElementById("message");
+
+
+                message.textContent =
+                    text;
+
+
+                message.className =
+                    `message ${type}`;
+
+
+                message.style.display =
+                    "block";
+
+
+                setTimeout(function() {
+
+                    message.style.display =
+                        "none";
+
+
+                    message.className =
+                        "message";
+
+                }, 3000);
+
+            }
+
+
+            // ==================================================
+            // LOAD STUDENTS
+            // ==================================================
+
+            async function loadStudents() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/students",
+                            {
+                                method: "GET",
+
+                                headers: {
+
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load students."
+                        );
+
+                    }
+
+
+                    students =
+                        await response.json();
+
+
+                    const studentDropdown =
+                        document.getElementById(
+                            "studentId"
+                        );
+
+
+                    const searchDropdown =
+                        document.getElementById(
+                            "searchStudent"
+                        );
+
+
+                    studentDropdown.innerHTML = `
+                                <option value="">
+                                    Select Student
+                                </option>
+                            `;
+
+
+                    searchDropdown.innerHTML = `
+                                <option value="">
+                                    Select Student
+                                </option>
+                            `;
+
+
+                    students.forEach(
+                        function(student) {
+
+                            const text =
+                                `${student.studentId} - ${student.name}`;
+
+
+                            studentDropdown.appendChild(
+                                new Option(
+                                    text,
+                                    student.id
+                                )
+                            );
+
+
+                            searchDropdown.appendChild(
+                                new Option(
+                                    text,
+                                    student.id
+                                )
+                            );
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Student loading error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to load students.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // LOAD COURSES
+            // ==================================================
+
+            async function loadCourses() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/courses",
+                            {
+                                method: "GET",
+
+                                headers: {
+
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load courses."
+                        );
+
+                    }
+
+
+                    courses =
+                        await response.json();
+
+
+                    const courseDropdown =
+                        document.getElementById(
+                            "courseId"
+                        );
+
+
+                    courseDropdown.innerHTML = `
+                                <option value="">
+                                    Select Course
+                                </option>
+                            `;
+
+
+                    courses.forEach(
+                        function(course) {
+
+                            courseDropdown.appendChild(
+                                new Option(
+                                    `${course.courseName} (${course.courseCode})`,
+                                    course.id
+                                )
+                            );
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Course loading error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to load courses.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // LOAD SUBJECTS FOR COURSE
+            // ==================================================
+
+            async function loadSubjects(courseId) {
+
+                const subjectDropdown =
+                    document.getElementById(
+                        "subjectId"
+                    );
+
+
+                subjectDropdown.innerHTML = `
+                            <option value="">
+                                Loading subjects...
+                            </option>
+                        `;
+
+
+                subjectDropdown.disabled =
+                    true;
+
+
+                if (!courseId) {
+
+                    subjectDropdown.innerHTML = `
+                                <option value="">
+                                    Select Course First
+                                </option>
+                            `;
+
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/subjects/course/${courseId}`,
+                            {
+                                method: "GET",
+
+                                headers: {
+
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load subjects."
+                        );
+
+                    }
+
+
+                    const subjects =
+                        await response.json();
+
+
+                    subjectDropdown.innerHTML = `
+                                <option value="">
+                                    Select Subject
+                                </option>
+                            `;
+
+
+                    if (
+                        !Array.isArray(subjects) ||
+                        subjects.length === 0
+                    ) {
+
+                        subjectDropdown.innerHTML = `
+                                    <option value="">
+                                        No subjects available
+                                    </option>
+                                `;
+
+
+                        return;
+
+                    }
+
+
+                    subjects.forEach(
+                        function(subject) {
+
+                            subjectDropdown.appendChild(
+                                new Option(
+                                    subject.subjectName,
+                                    subject.id
+                                )
+                            );
+
+                        }
+                    );
+
+
+                    subjectDropdown.disabled =
+                        false;
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Subject loading error:",
+                        error
+                    );
+
+
+                    subjectDropdown.innerHTML = `
+                                <option value="">
+                                    Unable to load subjects
+                                </option>
+                            `;
+
+
+                    show(
+                        error.message ||
+                        "Unable to load subjects.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // STUDENT CHANGE
+            // ==================================================
+
+            document
+                .getElementById("studentId")
+                .addEventListener(
+                    "change",
+                    function() {
+
+                        const studentId =
+                            Number(this.value);
+
+
+                        const courseDropdown =
+                            document.getElementById(
+                                "courseId"
+                            );
+
+
+                        if (!studentId) {
+
+                            courseDropdown.value =
+                                "";
+
+
+                            loadSubjects("");
+
+                            return;
+
+                        }
+
+
+                        const student =
+                            students.find(
+                                item =>
+                                    Number(item.id) ===
+                                    studentId
+                            );
+
+
+                        if (!student) {
+
+                            return;
+
+                        }
+
+
+                        if (student.courseId) {
+
+                            courseDropdown.value =
+                                student.courseId;
+
+
+                            loadSubjects(
+                                student.courseId
+                            );
+
+                        }
+                        else {
+
+                            courseDropdown.value =
+                                "";
+
+
+                            loadSubjects("");
+
+                        }
+
+                    }
+                );
+
+
+            // ==================================================
+            // COURSE CHANGE
+            // ==================================================
+
+            document
+                .getElementById("courseId")
+                .addEventListener(
+                    "change",
+                    function() {
+
+                        loadSubjects(
+                            this.value
+                        );
+
+                    }
+                );
+
+
+            // ==================================================
+            // GET STUDENT
+            // ==================================================
+
+            function getStudent(studentId) {
+
+                return students.find(
+                    student =>
+                        Number(student.id) ===
+                        Number(studentId)
+                );
+
+            }
+
+
+            // ==================================================
+            // GET COURSE
+            // ==================================================
+
+            function getCourse(courseId) {
+
+                return courses.find(
+                    course =>
+                        Number(course.id) ===
+                        Number(courseId)
+                );
+
+            }
+
+
+            // ==================================================
+            // ADD MARKS
+            // ==================================================
+
+            document
+                .getElementById("form")
+                .addEventListener(
+                    "submit",
+                    async function(event) {
+
+                        event.preventDefault();
+
+
+                        const studentId =
+                            Number(
+                                document
+                                    .getElementById(
+                                        "studentId"
+                                    )
+                                    .value
+                            );
+
+
+                        const courseId =
+                            Number(
+                                document
+                                    .getElementById(
+                                        "courseId"
+                                    )
+                                    .value
+                            );
+
+
+                        const examName =
+                            document
+                                .getElementById(
+                                    "examName"
+                                )
+                                .value
+                                .trim();
+
+
+                        const subjectId =
+                            Number(
+                                document
+                                    .getElementById(
+                                        "subjectId"
+                                    )
+                                    .value
+                            );
+
+
+                        const marksObtained =
+                            Number(
+                                document
+                                    .getElementById(
+                                        "marks"
+                                    )
+                                    .value
+                            );
+
+
+                        if (!studentId) {
+
+                            show(
+                                "Please select a student.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        if (!courseId) {
+
+                            show(
+                                "Please select a course.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        if (!examName) {
+
+                            show(
+                                "Please enter exam name.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        if (!subjectId) {
+
+                            show(
+                                "Please select a subject.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        if (
+                            Number.isNaN(marksObtained) ||
+                            marksObtained < 0 ||
+                            marksObtained > 100
+                        ) {
+
+                            show(
+                                "Marks must be between 0 and 100.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        const student =
+                            getStudent(studentId);
+
+
+                        if (
+                            student &&
+                            student.courseId &&
+                            Number(student.courseId) !==
+                            courseId
+                        ) {
+
+                            show(
+                                "Selected course does not belong to this student.",
+                                "error"
+                            );
+
+
+                            return;
+
+                        }
+
+
+                        const data = {
+
+                            studentId:
+                                studentId,
+
+                            courseId:
+                                courseId,
+
+                            subjectId:
+                                subjectId,
+
+                            examName:
+                                examName,
+
+                            marksObtained:
+                                marksObtained
+
+                        };
+
+
+                        const saveButton =
+                            document.getElementById(
+                                "saveButton"
+                            );
+
+
+                        saveButton.disabled =
+                            true;
+
+
+                        saveButton.textContent =
+                            "Saving...";
+
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    "/api/marks",
+                                    {
+
+                                        method:
+                                            "POST",
+
+                                        headers: {
+
+                                            "Authorization":
+                                                `Bearer ${token}`,
+
+                                            "Content-Type":
+                                                "application/json"
+
+                                        },
+
+                                        body:
+                                            JSON.stringify(data)
+
+                                    }
+                                );
+
+
+                            if (!response.ok) {
+
+                                let errorMessage =
+                                    "Unable to add marks.";
+
+
+                                try {
+
+                                    const result =
+                                        await response.json();
+
+
+                                    errorMessage =
+                                        result.message ||
+                                        result.title ||
+                                        errorMessage;
+
+                                }
+                                catch { }
+
+
+                                throw new Error(
+                                    errorMessage
+                                );
+
+                            }
+
+
+                            show(
+                                "Marks added successfully.",
+                                "success"
+                            );
+
+
+                            document
+                                .getElementById(
+                                    "searchStudent"
+                                )
+                                .value =
+                                studentId;
+
+
+                            await loadMarks();
+
+
+                            document
+                                .getElementById(
+                                    "examName"
+                                )
+                                .value =
+                                "";
+
+
+                            document
+                                .getElementById(
+                                    "marks"
+                                )
+                                .value =
+                                "";
+
+
+                            document
+                                .getElementById(
+                                    "subjectId"
+                                )
+                                .value =
+                                "";
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                "Marks error:",
+                                error
+                            );
+
+
+                            show(
+                                error.message ||
+                                "Unable to add marks.",
+                                "error"
+                            );
+
+                        }
+                        finally {
+
+                            saveButton.disabled =
+                                false;
+
+
+                            saveButton.textContent =
+                                "Add Marks";
+
+                        }
+
+                    }
+                );
+
+
+            // ==================================================
+            // LOAD MARKS
+            // ==================================================
+
+            async function loadMarks() {
+
+                const studentId =
+                    document
+                        .getElementById(
+                            "searchStudent"
+                        )
+                        .value;
+
+
+                const body =
+                    document.getElementById(
+                        "body"
+                    );
+
+
+                if (!studentId) {
+
+                    body.innerHTML = `
+                                <tr>
+
+                                    <td colspan="6"
+                                        class="empty-row">
+
+                                        Please select a student.
+
+                                    </td>
+
+                                </tr>
+                            `;
+
+
+                    return;
+
+                }
+
+
+                body.innerHTML = `
+                            <tr>
+
+                                <td colspan="6"
+                                    class="empty-row">
+
+                                    Loading marks...
+
+                                </td>
+
+                            </tr>
+                        `;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/marks/student/${studentId}`,
+                            {
+                                method: "GET",
+
+                                headers: {
+
+                                    "Authorization":
+                                        `Bearer ${token}`
+
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load marks."
+                        );
+
+                    }
+
+
+                    const records =
+                        await response.json();
+
+
+                    const student =
+                        getStudent(studentId);
+
+
+                    body.innerHTML =
+                        "";
+
+
+                    if (
+                        !records ||
+                        records.length === 0
+                    ) {
+
+                        body.innerHTML = `
+                                    <tr>
+
+                                        <td colspan="6"
+                                            class="empty-row">
+
+                                            No marks found for
+                                            ${student
+                                ? `${student.studentId} - ${student.name}`
+                                : "selected student"}.
+
+                                        </td>
+
+                                    </tr>
+                                `;
+
+
+                        return;
+
+                    }
+
+
+                    records.forEach(
+                        function(mark) {
+
+                            const course =
+                                getCourse(
+                                    mark.courseId
+                                );
+
+
+                            body.innerHTML += `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHtml(
+                                student
+                                    ? `${student.studentId} - ${student.name}`
+                                    : "N/A"
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                course
+                                    ? `${course.courseName} (${course.courseCode})`
+                                    : `Course ID: ${mark.courseId}`
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                mark.examName ?? "—"
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                mark.subjectName ?? "—"
+                            )}
+                                            </td>
+
+                                            <td class="marks-value">
+                                                ${mark.marksObtained}
+                                            </td>
+
+                                            <td>
+
+                                                <button type="button"
+                                                        class="delete-mark-button"
+                                                        onclick="deleteMarks(${mark.id})"
+                                                        title="Delete Marks"
+                                                        aria-label="Delete Marks">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2"
+                                                         stroke-linecap="round"
+                                                         stroke-linejoin="round">
+
+                                                        <path d="M3 6h18"></path>
+
+                                                        <path d="M8 6V4h8v2"></path>
+
+                                                        <path d="M19 6l-1 14H6L5 6"></path>
+
+                                                        <path d="M10 11v5"></path>
+
+                                                        <path d="M14 11v5"></path>
+
+                                                    </svg>
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+
+                                    `;
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Marks loading error:",
+                        error
+                    );
+
+
+                    body.innerHTML = `
+                                <tr>
+
+                                    <td colspan="6"
+                                        class="empty-row">
+
+                                        Unable to load marks.
+
+                                    </td>
+
+                                </tr>
+                            `;
+
+
+                    show(
+                        error.message ||
+                        "Unable to load marks.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // DELETE MARKS
+            // ==================================================
+
+            async function deleteMarks(id) {
+
+                const result =
+                    await Swal.fire({
+
+                        title:
+                            "Are you sure?",
+
+                        text:
+                            "You want to delete these marks?",
+
+                        icon:
+                            "warning",
+
+                        showCancelButton:
+                            true,
+
+                        confirmButtonText:
+                            "Yes, delete it",
+
+                        cancelButtonText:
+                            "Cancel"
+
+                    });
+
+
+                if (!result.isConfirmed) {
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/marks/${id}`,
+                            {
+
+                                method:
+                                    "DELETE",
+
+                                headers: {
+
+                                    "Authorization":
+                                        `Bearer ${token}`
+
+                                }
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        let message =
+                            "Unable to delete marks.";
+
+
+                        try {
+
+                            const data =
+                                await response.json();
+
+
+                            message =
+                                data.message ||
+                                data.title ||
+                                message;
+
+                        }
+                        catch { }
+
+
+                        throw new Error(
+                            message
+                        );
+
+                    }
+
+
+                    await Swal.fire({
+
+                        title:
+                            "Deleted!",
+
+                        text:
+                            "Marks deleted successfully.",
+
+                        icon:
+                            "success",
+
+                        confirmButtonText:
+                            "OK"
+
+                    });
+
+
+                    await loadMarks();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Delete marks error:",
+                        error
+                    );
+
+
+                    await Swal.fire({
+
+                        title:
+                            "Error",
+
+                        text:
+                            error.message ||
+                            "Unable to delete marks.",
+
+                        icon:
+                            "error",
+
+                        confirmButtonText:
+                            "OK"
+
+                    });
+
+                }
+
+            }
+
+
+            // ==================================================
+            // ESCAPE HTML
+            // ==================================================
+
+            function escapeHtml(value) {
+
+                return String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+
+            }
+
+
+            // ==================================================
+            // INITIAL LOAD
+            // ==================================================
+
+            async function initialize() {
+
+                await loadStudents();
+
+                await loadCourses();
+
+            }
+
+
+            initialize();
+
+    </script>
+
+</body>
+</html>

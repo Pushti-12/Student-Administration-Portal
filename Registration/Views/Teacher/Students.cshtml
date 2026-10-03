@@ -1,0 +1,335 @@
+﻿@{
+    ViewData["Title"] = "Students";
+}
+
+<div class="teacher-page">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Students</h1>
+            <p>
+                Students enrolled in your courses.
+            </p>
+        </div>
+
+        <a href="/Teacher/Dashboard">
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Course</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="studentBody">
+
+                    <tr>
+                        <td colspan="5"
+                            class="loading">
+                            Loading students...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .teacher-page {
+        padding: 30px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+        .page-header h1 {
+            margin: 0 0 5px;
+            font-size: 30px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .page-header a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+    .card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(15,23,42,.05);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 15px 17px;
+        text-align: left;
+        border-bottom: 1px solid #eef0f4;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+    }
+
+    td {
+        color: #334155;
+        font-size: 13px;
+    }
+
+    .course-badge {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .loading,
+    .empty {
+        text-align: center !important;
+        padding: 40px !important;
+        color: #94a3b8;
+    }
+
+    @@media(max-width:700px) {
+
+        .teacher-page {
+            padding: 15px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        table {
+            min-width: 700px;
+        }
+    }
+
+</style>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+    const user =
+        JSON.parse(
+            localStorage.getItem("loggedInUser") || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !== "TEACHER"
+    ) {
+        location.href = "/";
+    }
+
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(url, {
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            });
+
+        if (!response.ok)
+            throw new Error(
+                `Request failed: ${response.status}`
+            );
+
+        return await response.json();
+    }
+
+
+    async function loadStudents() {
+
+        try {
+
+            const teacher =
+                await getJson(
+                    "/api/teachers/me"
+                );
+
+            const courses =
+                await getJson(
+                    "/api/courses"
+                );
+
+            const students =
+                await getJson(
+                    "/api/students"
+                );
+
+
+            const myCourses =
+                courses.filter(
+                    c =>
+                        Number(c.teacherId) ===
+                        Number(teacher.id)
+                );
+
+
+            const myCourseIds =
+                myCourses.map(
+                    c => Number(c.id)
+                );
+
+
+            const myStudents =
+                students.filter(
+                    s =>
+                        myCourseIds.includes(
+                            Number(s.courseId)
+                        )
+                );
+
+
+            const body =
+                document.getElementById(
+                    "studentBody"
+                );
+
+
+            if (!myStudents.length) {
+
+                body.innerHTML = `
+                        <tr>
+                            <td colspan="5"
+                                class="empty">
+                                No students found.
+                            </td>
+                        </tr>
+                    `;
+
+                return;
+            }
+
+
+            body.innerHTML =
+                myStudents.map(student => {
+
+                    const course =
+                        myCourses.find(
+                            c =>
+                                Number(c.id) ===
+                                Number(student.courseId)
+                        );
+
+
+                    return `
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        ${student.studentId}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ${student.name}
+                                </td>
+
+                                <td>
+                                    ${student.email}
+                                </td>
+
+                                <td>
+                                    ${student.phone}
+                                </td>
+
+                                <td>
+
+                                    <span class="course-badge">
+                                        ${course
+                            ? `${course.courseCode} - ${course.courseName}`
+                            : "N/A"
+                        }
+                                    </span>
+
+                                </td>
+
+                            </tr>
+                        `;
+
+                }).join("");
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "studentBody"
+            ).innerHTML = `
+                    <tr>
+                        <td colspan="5"
+                            class="empty">
+                            Unable to load students.
+                        </td>
+                    </tr>
+                `;
+
+        }
+
+    }
+
+
+    loadStudents();
+
+</script>

@@ -1,0 +1,1213 @@
+﻿@{
+    ViewData["Title"] = "Attendance";
+}
+
+<div class="teacher-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <div>
+            <h1>Attendance</h1>
+            <p>Mark and view attendance for your students.</p>
+        </div>
+
+        <a href="/Teacher/Dashboard" class="back-link">
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+    <div id="message"
+         class="message"
+         style="display:none;">
+    </div>
+
+
+    <!-- =========================
+         MARK ATTENDANCE
+         ========================= -->
+
+    <div class="card">
+
+        <div class="card-title">
+            <h2>Mark Attendance</h2>
+            <p>Select a student. Their assigned course will be selected automatically.</p>
+        </div>
+
+
+        <form id="attendanceForm">
+
+            <div class="form-grid">
+
+                <!-- STUDENT -->
+
+                <div class="field">
+
+                    <label for="studentId">
+                        Student
+                    </label>
+
+                    <select id="studentId" required>
+
+                        <option value="">
+                            Loading students...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- COURSE -->
+
+                <div class="field">
+
+                    <label for="courseId">
+                        Course
+                    </label>
+
+                    <select id="courseId" required>
+
+                        <option value="">
+                            Select student first
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DATE -->
+
+                <div class="field">
+
+                    <label for="date">
+                        Date
+                    </label>
+
+                    <input type="date"
+                           id="date"
+                           required />
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="field">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status" required>
+
+                        <option value="PRESENT">
+                            PRESENT
+                        </option>
+
+                        <option value="ABSENT">
+                            ABSENT
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit"
+                    id="saveAttendanceButton">
+
+                Mark Attendance
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================
+         VIEW ATTENDANCE
+         ========================= -->
+
+    <div class="card">
+
+        <div class="card-title">
+
+            <h2>Attendance Records</h2>
+
+            <p>
+                Select a student to view their attendance.
+            </p>
+
+        </div>
+
+
+        <div class="filter-row">
+
+            <select id="viewStudent">
+
+                <option value="">
+                    Select Student
+                </option>
+
+            </select>
+
+
+            <button type="button"
+                    id="viewAttendanceButton">
+
+                View Attendance
+
+            </button>
+
+        </div>
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Date</th>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="attendanceBody">
+
+                    <tr>
+                        <td colspan="4"
+                            class="empty">
+
+                            Select a student to view attendance.
+
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    /* =========================
+           PAGE
+           ========================= */
+
+    .teacher-page {
+        padding: 30px;
+        max-width: 1250px;
+        margin: 0 auto;
+    }
+
+
+    /* =========================
+           HEADER
+           ========================= */
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+        .page-header h1 {
+            margin: 0 0 6px;
+            font-size: 30px;
+            color: #1e293b;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+    .back-link {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+
+    /* =========================
+           CARD
+           ========================= */
+
+    .card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 22px;
+        box-shadow: 0 6px 18px rgba(15,23,42,.05);
+    }
+
+    .card-title {
+        margin-bottom: 20px;
+    }
+
+        .card-title h2 {
+            margin: 0 0 6px;
+            font-size: 19px;
+            color: #1e293b;
+        }
+
+        .card-title p {
+            margin: 0;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+
+    /* =========================
+           FORM
+           ========================= */
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 7px;
+    }
+
+    select,
+    input {
+        width: 100%;
+        height: 42px;
+        padding: 0 11px;
+        border: 1px solid #d6dce5;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1e293b;
+        outline: none;
+    }
+
+        select:focus,
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.08);
+        }
+
+
+    /* =========================
+           BUTTON
+           ========================= */
+
+    button {
+        border: none;
+        background: #2563eb;
+        color: #ffffff;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+
+    /* =========================
+           FILTER
+           ========================= */
+
+    .filter-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+        .filter-row select {
+            max-width: 420px;
+        }
+
+
+    /* =========================
+           TABLE
+           ========================= */
+
+    .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 14px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eef0f4;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    td {
+        color: #334155;
+    }
+
+    tbody tr:hover td {
+        background: #fafbff;
+    }
+
+
+    /* =========================
+           STATUS
+           ========================= */
+
+    .status-present {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .status-absent {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+
+    /* =========================
+           MESSAGE
+           ========================= */
+
+    .message {
+        padding: 12px 15px;
+        border-radius: 9px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .message.success {
+            background: #ecfdf5;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+    .empty {
+        text-align: center !important;
+        padding: 35px !important;
+        color: #94a3b8 !important;
+    }
+
+
+    /* =========================
+           RESPONSIVE
+           ========================= */
+
+    @@media (max-width: 950px) {
+
+        .form-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .teacher-page {
+            padding: 15px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-row {
+            flex-direction: column;
+        }
+
+            .filter-row select {
+                max-width: none;
+            }
+
+            .filter-row button {
+                width: 100%;
+            }
+    }
+
+</style>
+
+
+<script>
+
+    /* =========================
+       AUTH
+       ========================= */
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+    const user =
+        JSON.parse(
+            localStorage.getItem("loggedInUser") || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !== "TEACHER"
+    ) {
+        location.href = "/";
+    }
+
+
+    /* =========================
+       DATA
+       ========================= */
+
+    let teacher = null;
+    let students = [];
+    let courses = [];
+
+
+    /* =========================
+       DEFAULT DATE
+       ========================= */
+
+    document.getElementById("date").value =
+        new Date().toISOString().split("T")[0];
+
+
+    /* =========================
+       GET JSON
+       ========================= */
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(url, {
+                method: "GET",
+
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            });
+
+
+        if (!response.ok) {
+
+            let message =
+                `Request failed: ${response.status}`;
+
+            try {
+
+                const data =
+                    await response.json();
+
+                message =
+                    data.message ||
+                    data.title ||
+                    message;
+
+            }
+            catch { }
+
+            throw new Error(message);
+        }
+
+
+        return await response.json();
+
+    }
+
+
+    /* =========================
+       MESSAGE
+       ========================= */
+
+    function showMessage(text, type) {
+
+        const box =
+            document.getElementById("message");
+
+
+        box.textContent = text;
+
+        box.className =
+            `message ${type}`;
+
+        box.style.display = "block";
+
+
+        setTimeout(function () {
+
+            box.style.display = "none";
+
+        }, 3500);
+
+    }
+
+
+    /* =========================
+       INITIALIZE
+       ========================= */
+
+    async function initialize() {
+
+        try {
+
+            /*
+             * STEP 1:
+             * Logged-in teacher
+             */
+
+            teacher =
+                await getJson(
+                    "/api/teachers/me"
+                );
+
+
+            /*
+             * STEP 2:
+             * All courses
+             */
+
+            const allCourses =
+                await getJson(
+                    "/api/courses"
+                );
+
+
+            /*
+             * ONLY MY COURSES
+             */
+
+            courses =
+                allCourses.filter(
+                    course =>
+                        Number(course.teacherId) ===
+                        Number(teacher.id)
+                );
+
+
+            /*
+             * STEP 3:
+             * All students
+             */
+
+            const allStudents =
+                await getJson(
+                    "/api/students"
+                );
+
+
+            /*
+             * COURSE IDs BELONGING
+             * TO THIS TEACHER
+             */
+
+            const myCourseIds =
+                courses.map(
+                    course =>
+                        Number(course.id)
+                );
+
+
+            /*
+             * ONLY MY STUDENTS
+             */
+
+            students =
+                allStudents.filter(
+                    student =>
+                        myCourseIds.includes(
+                            Number(student.courseId)
+                        )
+                );
+
+
+            populateStudentDropdowns();
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                error.message ||
+                "Unable to load students and courses.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       POPULATE STUDENTS
+       ========================= */
+
+    function populateStudentDropdowns() {
+
+        const attendanceStudent =
+            document.getElementById(
+                "studentId"
+            );
+
+
+        const viewStudent =
+            document.getElementById(
+                "viewStudent"
+            );
+
+
+        attendanceStudent.innerHTML =
+            `<option value="">
+                    Select Student
+                 </option>`;
+
+
+        viewStudent.innerHTML =
+            `<option value="">
+                    Select Student
+                 </option>`;
+
+
+        students.forEach(function (student) {
+
+            const text =
+                `${student.studentId} - ${student.name}`;
+
+
+            const option =
+                new Option(
+                    text,
+                    student.id
+                );
+
+
+            attendanceStudent.appendChild(
+                option
+            );
+
+
+            viewStudent.appendChild(
+                option.cloneNode(true)
+            );
+
+        });
+
+    }
+
+
+    /* =========================
+       STUDENT CHANGE
+       ========================= */
+
+    document.getElementById("studentId")
+        .addEventListener(
+            "change",
+            function () {
+
+                const selectedStudent =
+                    students.find(
+                        student =>
+                            Number(student.id) ===
+                            Number(this.value)
+                    );
+
+
+                const courseDropdown =
+                    document.getElementById(
+                        "courseId"
+                    );
+
+
+                courseDropdown.innerHTML =
+                    `<option value="">
+                            Select Course
+                         </option>`;
+
+
+                if (!selectedStudent)
+                    return;
+
+
+                const assignedCourse =
+                    courses.find(
+                        course =>
+                            Number(course.id) ===
+                            Number(
+                                selectedStudent.courseId
+                            )
+                    );
+
+
+                if (!assignedCourse) {
+
+                    showMessage(
+                        "Assigned course not found.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const option =
+                    new Option(
+                        `${assignedCourse.courseCode} - ${assignedCourse.courseName}`,
+                        assignedCourse.id
+                    );
+
+
+                courseDropdown.appendChild(
+                    option
+                );
+
+
+                courseDropdown.value =
+                    assignedCourse.id;
+
+            }
+        );
+
+
+    /* =========================
+       SUBMIT ATTENDANCE
+       ========================= */
+
+    document.getElementById("attendanceForm")
+        .addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const studentId =
+                    Number(
+                        document.getElementById(
+                            "studentId"
+                        ).value
+                    );
+
+
+                const courseId =
+                    Number(
+                        document.getElementById(
+                            "courseId"
+                        ).value
+                    );
+
+
+                const date =
+                    document.getElementById(
+                        "date"
+                    ).value;
+
+
+                const status =
+                    document.getElementById(
+                        "status"
+                    ).value;
+
+
+                if (!studentId) {
+
+                    showMessage(
+                        "Please select a student.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!courseId) {
+
+                    showMessage(
+                        "Please select a course.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const button =
+                    document.getElementById(
+                        "saveAttendanceButton"
+                    );
+
+
+                button.disabled = true;
+
+                button.textContent =
+                    "Saving...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/attendance",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        studentId:
+                                            studentId,
+
+                                        courseId:
+                                            courseId,
+
+                                        date:
+                                            date,
+
+                                        status:
+                                            status
+                                    })
+                            }
+                        );
+
+
+                    let result = null;
+
+                    try {
+                        result =
+                            await response.json();
+                    }
+                    catch { }
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result?.message ||
+                            result?.title ||
+                            "Unable to mark attendance."
+                        );
+
+                    }
+
+
+                    showMessage(
+                        "Attendance marked successfully.",
+                        "success"
+                    );
+
+
+                    /*
+                     * Automatically show
+                     * newly saved records.
+                     */
+
+                    document.getElementById(
+                        "viewStudent"
+                    ).value =
+                        studentId;
+
+
+                    await loadAttendance();
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    showMessage(
+                        error.message ||
+                        "Unable to mark attendance.",
+                        "error"
+                    );
+
+                }
+                finally {
+
+                    button.disabled = false;
+
+                    button.textContent =
+                        "Mark Attendance";
+
+                }
+
+            }
+        );
+
+
+    /* =========================
+       VIEW ATTENDANCE BUTTON
+       ========================= */
+
+    document.getElementById(
+        "viewAttendanceButton"
+    ).addEventListener(
+        "click",
+        loadAttendance
+    );
+
+
+    /* =========================
+       LOAD ATTENDANCE
+       ========================= */
+
+    async function loadAttendance() {
+
+        const studentId =
+            document.getElementById(
+                "viewStudent"
+            ).value;
+
+
+        const body =
+            document.getElementById(
+                "attendanceBody"
+            );
+
+
+        if (!studentId) {
+
+            body.innerHTML = `
+                    <tr>
+                        <td colspan="4"
+                            class="empty">
+
+                            Please select a student.
+
+                        </td>
+                    </tr>
+                `;
+
+            return;
+        }
+
+
+        body.innerHTML = `
+                <tr>
+                    <td colspan="4"
+                        class="empty">
+
+                        Loading attendance...
+
+                    </td>
+                </tr>
+            `;
+
+
+        try {
+
+            const records =
+                await getJson(
+                    `/api/attendance/student/${studentId}`
+                );
+
+
+            /*
+             * Security on frontend:
+             * only courses belonging to this
+             * teacher are shown.
+             */
+
+            const myCourseIds =
+                new Set(
+                    courses.map(
+                        c => Number(c.id)
+                    )
+                );
+
+
+            const teacherRecords =
+                records.filter(
+                    record =>
+                        myCourseIds.has(
+                            Number(record.courseId)
+                        )
+                );
+
+
+            if (!teacherRecords.length) {
+
+                body.innerHTML = `
+                        <tr>
+                            <td colspan="4"
+                                class="empty">
+
+                                No attendance records found.
+
+                            </td>
+                        </tr>
+                    `;
+
+                return;
+            }
+
+
+            body.innerHTML =
+                teacherRecords
+                    .slice()
+                    .sort(
+                        (a, b) =>
+                            new Date(b.date) -
+                            new Date(a.date)
+                    )
+                    .map(function (record) {
+
+                        const student =
+                            students.find(
+                                s =>
+                                    Number(s.id) ===
+                                    Number(studentId)
+                            );
+
+
+                        const course =
+                            courses.find(
+                                c =>
+                                    Number(c.id) ===
+                                    Number(record.courseId)
+                            );
+
+
+                        const status =
+                            String(
+                                record.status
+                            ).toUpperCase();
+
+
+                        return `
+                                <tr>
+
+                                    <td>
+                                        ${record.date
+                                ? new Date(
+                                    record.date
+                                ).toLocaleDateString(
+                                    "en-IN"
+                                )
+                                : "—"
+                            }
+                                    </td>
+
+                                    <td>
+                                        ${student
+                                ? `${student.studentId} - ${student.name}`
+                                : "—"
+                            }
+                                    </td>
+
+                                    <td>
+                                        ${course
+                                ? `${course.courseCode} - ${course.courseName}`
+                                : "—"
+                            }
+                                    </td>
+
+                                    <td class="${status === "PRESENT"
+                                ? "status-present"
+                                : "status-absent"
+                            }">
+
+                                        ${record.status}
+
+                                    </td>
+
+                                </tr>
+                            `;
+
+                    })
+                    .join("");
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            body.innerHTML = `
+                    <tr>
+                        <td colspan="4"
+                            class="empty">
+
+                            Unable to load attendance.
+
+                        </td>
+                    </tr>
+                `;
+
+        }
+
+    }
+
+
+    /* =========================
+       START
+       ========================= */
+
+    initialize();
+
+</script>

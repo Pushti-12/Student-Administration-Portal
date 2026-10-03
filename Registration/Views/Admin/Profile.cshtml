@@ -1,0 +1,1613 @@
+﻿@{
+    ViewData["Title"] = "Admin Profile";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        Admin Profile - Student Management System
+    </title>
+
+    <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+
+            body {
+                margin: 0;
+                background: #f5f7fb;
+                color: #1f2937;
+                font-family: Arial, sans-serif;
+            }
+
+
+            /* =========================
+                       NAVBAR
+                       ========================= */
+
+            .admin-profile-navbar {
+                height: 70px;
+                background: #ffffff;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 35px;
+            }
+
+
+            .admin-profile-brand {
+                font-size: 22px;
+                font-weight: 700;
+                color: #2563eb;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+
+            .admin-profile-brand-mark {
+                font-size: 25px;
+            }
+
+
+            .admin-profile-user-wrapper {
+                position: relative;
+            }
+
+
+            .admin-profile-user {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                cursor: pointer;
+            }
+
+
+            .admin-profile-avatar {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                border-radius: 50%;
+                background: #2563eb;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                overflow: hidden;
+            }
+
+
+                .admin-profile-avatar img {
+                    width: 40px;
+                    height: 40px;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    display: block;
+                }
+
+
+            .admin-profile-user-info {
+                display: flex;
+                flex-direction: column;
+            }
+
+
+                .admin-profile-user-info strong {
+                    font-size: 14px;
+                    color: #111827;
+                }
+
+
+                .admin-profile-user-info span {
+                    font-size: 12px;
+                    color: #6b7280;
+                }
+
+
+            .admin-profile-arrow {
+                font-size: 12px;
+                color: #555;
+            }
+
+
+            /* =========================
+                       DROPDOWN
+                       ========================= */
+
+            .admin-profile-dropdown {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 48px;
+                width: 180px;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+                z-index: 1000;
+                overflow: hidden;
+            }
+
+
+                .admin-profile-dropdown.show {
+                    display: block;
+                }
+
+
+            .admin-profile-dropdown-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 15px;
+                border: none;
+                background: white;
+                color: #1f2937;
+                text-decoration: none;
+                font-size: 14px;
+                cursor: pointer;
+                text-align: left;
+            }
+
+
+                .admin-profile-dropdown-item:hover {
+                    background: #f5f7fb;
+                }
+
+
+            /* =========================
+                       PAGE
+                       ========================= */
+
+            .admin-profile-page {
+                min-height: calc(100vh - 70px);
+                padding: 35px;
+                background: #f5f7fb;
+            }
+
+
+            .admin-profile-header {
+                max-width: 900px;
+                margin: 0 auto 25px;
+            }
+
+
+                .admin-profile-header h1 {
+                    margin: 0;
+                    font-size: 30px;
+                    color: #111827;
+                }
+
+
+                .admin-profile-header p {
+                    margin-top: 7px;
+                    color: #6b7280;
+                }
+
+
+            /* =========================
+                       MESSAGE
+                       ========================= */
+
+            .admin-profile-message {
+                max-width: 900px;
+                margin: 0 auto 20px;
+                padding: 12px 15px;
+                border-radius: 8px;
+                display: none;
+            }
+
+
+                .admin-profile-message.success {
+                    display: block;
+                    background: #dcfce7;
+                    color: #166534;
+                }
+
+
+                .admin-profile-message.error {
+                    display: block;
+                    background: #fee2e2;
+                    color: #991b1b;
+                }
+
+
+            /* =========================
+                       CARD
+                       ========================= */
+
+            .admin-profile-card {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            }
+
+
+            /* =========================
+                       IMAGE
+                       ========================= */
+
+            .admin-profile-image-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+                padding-bottom: 25px;
+                margin-bottom: 25px;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+
+            .admin-large-avatar {
+                width: 120px;
+                height: 120px;
+                min-width: 120px;
+                border-radius: 50%;
+                background: #2563eb;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 42px;
+                font-weight: 700;
+                overflow: hidden;
+            }
+
+
+                .admin-large-avatar img {
+                    width: 120px;
+                    height: 120px;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    display: block;
+                }
+
+
+            .admin-image-info h2 {
+                margin: 0 0 6px;
+                color: #111827;
+            }
+
+
+            .admin-image-info p {
+                color: #6b7280;
+                margin: 0 0 14px;
+            }
+
+
+            #adminProfileImageInput {
+                display: none;
+            }
+
+
+            .admin-upload-button {
+                display: inline-block;
+                padding: 9px 15px;
+                border: 1px solid #d1d5db;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                color: #374151;
+                background: white;
+            }
+
+
+                .admin-upload-button:hover {
+                    background: #f3f4f6;
+                }
+
+
+            /* =========================
+                       FORM
+                       ========================= */
+
+            .admin-profile-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 22px;
+            }
+
+
+            .admin-form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+
+                .admin-form-group label {
+                    margin-bottom: 7px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #374151;
+                }
+
+
+                .admin-form-group input {
+                    height: 44px;
+                    padding: 0 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    outline: none;
+                }
+
+
+                    .admin-form-group input:focus {
+                        border-color: #2563eb;
+                    }
+
+
+                    .admin-form-group input[readonly] {
+                        background: #f3f4f6;
+                        color: #6b7280;
+                    }
+
+
+                .admin-form-group small {
+                    margin-top: 5px;
+                    color: #9ca3af;
+                    font-size: 11px;
+                }
+
+
+            /* =========================
+                       ACTIONS
+                       ========================= */
+
+            .admin-profile-actions {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 28px;
+                padding-top: 22px;
+                border-top: 1px solid #e5e7eb;
+            }
+
+
+            #saveAdminProfileButton {
+                border: none;
+                border-radius: 8px;
+                padding: 11px 22px;
+                background: #2563eb;
+                color: white;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+
+                #saveAdminProfileButton:hover {
+                    background: #1d4ed8;
+                }
+
+
+                #saveAdminProfileButton:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
+
+            /* =========================
+                       RESPONSIVE
+                       ========================= */
+
+            @@media (max-width: 700px) {
+
+                .admin-profile-navbar {
+                    padding: 0 18px;
+                }
+
+
+                .admin-profile-user-info {
+                    display: none;
+                }
+
+
+                .admin-profile-page {
+                    padding: 20px;
+                }
+
+
+                .admin-profile-card {
+                    padding: 20px;
+                }
+
+
+                .admin-profile-image-section {
+                    align-items: flex-start;
+                }
+
+
+                .admin-profile-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+         ========================= -->
+
+    <nav class="admin-profile-navbar">
+
+        <div class="admin-profile-brand">
+
+            <span class="admin-profile-brand-mark">
+                🎓
+            </span>
+
+            Student Management System
+
+        </div>
+
+
+        <div class="admin-profile-user-wrapper">
+
+            <div class="admin-profile-user"
+                 id="adminProfileToggle">
+
+                <div class="admin-profile-avatar"
+                     id="adminProfileAvatar">
+
+                    A
+
+                </div>
+
+
+                <div class="admin-profile-user-info">
+
+                    <strong id="adminProfileName">
+                        Admin
+                    </strong>
+
+                    <span>
+                        Admin
+                    </span>
+
+                </div>
+
+
+                <span class="admin-profile-arrow">
+                    ▾
+                </span>
+
+            </div>
+
+
+            <div class="admin-profile-dropdown"
+                 id="adminProfileDropdown">
+
+                <a href="/Admin/Profile"
+                   class="admin-profile-dropdown-item">
+
+                    <span>
+                        👤
+                    </span>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
+
+
+                <button type="button"
+                        id="adminProfileLogout"
+                        class="admin-profile-dropdown-item">
+
+                    <span>
+                        🚪
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         PROFILE PAGE
+         ========================= -->
+
+    <main class="admin-profile-page">
+
+
+        <div class="admin-profile-header">
+
+            <h1>
+                My Profile
+            </h1>
+
+            <p>
+                View and update your personal information.
+            </p>
+
+        </div>
+
+
+        <div id="adminProfileMessage"
+             class="admin-profile-message">
+        </div>
+
+
+        <section class="admin-profile-card">
+
+
+            <!-- =========================
+                 PROFILE IMAGE
+                 ========================= -->
+
+            <div class="admin-profile-image-section">
+
+                <div id="adminLargeAvatar"
+                     class="admin-large-avatar">
+
+                    A
+
+                </div>
+
+
+                <div class="admin-image-info">
+
+                    <h2 id="adminDisplayName">
+                        Admin
+                    </h2>
+
+                    <p>
+                        Upload your profile picture.
+                    </p>
+
+
+                    <label for="adminProfileImageInput"
+                           class="admin-upload-button">
+
+                        📷 Change Profile Picture
+
+                    </label>
+
+
+                    <input type="file"
+                           id="adminProfileImageInput"
+                           accept="image/jpeg,image/png,image/webp" />
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 FORM
+                 ========================= -->
+
+            <form id="adminProfileForm">
+
+                <div class="admin-profile-grid">
+
+
+                    <!-- ADMIN ID -->
+
+                    <div class="admin-form-group">
+
+                        <label for="adminId">
+                            Admin ID
+                        </label>
+
+                        <input type="text"
+                               id="adminId"
+                               readonly />
+
+                        <small>
+                            Admin ID cannot be changed.
+                        </small>
+
+                    </div>
+
+
+                    <!-- NAME -->
+
+                    <div class="admin-form-group">
+
+                        <label for="adminNameInput">
+                            Name
+                        </label>
+
+                        <input type="text"
+                               id="adminNameInput"
+                               required />
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="admin-form-group">
+
+                        <label for="adminEmailInput">
+                            Email
+                        </label>
+
+                        <input type="email"
+                               id="adminEmailInput"
+                               required />
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="admin-form-group">
+
+                        <label for="adminPhoneInput">
+                            Phone
+                        </label>
+
+                        <input type="text"
+                               id="adminPhoneInput"
+                               maxlength="10"
+                               pattern="[0-9]{10}"
+                               required />
+
+                        <small>
+                            Enter a valid 10-digit phone number.
+                        </small>
+
+                    </div>
+
+
+                    <!-- ROLE -->
+
+                    <div class="admin-form-group">
+
+                        <label for="adminRole">
+                            Role
+                        </label>
+
+                        <input type="text"
+                               id="adminRole"
+                               value="ADMIN"
+                               readonly />
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     SAVE
+                     ========================= -->
+
+                <div class="admin-profile-actions">
+
+                    <button type="submit"
+                            id="saveAdminProfileButton">
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <script>
+
+            // ==========================================
+            // TOKEN
+            // ==========================================
+
+            const adminProfileToken =
+                localStorage.getItem(
+                    "jwtToken"
+                );
+
+
+            let currentAdmin = null;
+
+            let selectedAdminProfileImage = null;
+
+
+            // ==========================================
+            // ELEMENTS
+            // ==========================================
+
+            const adminProfileForm =
+                document.getElementById(
+                    "adminProfileForm"
+                );
+
+
+            const adminNameInput =
+                document.getElementById(
+                    "adminNameInput"
+                );
+
+
+            const adminEmailInput =
+                document.getElementById(
+                    "adminEmailInput"
+                );
+
+
+            const adminPhoneInput =
+                document.getElementById(
+                    "adminPhoneInput"
+                );
+
+
+            const adminIdInput =
+                document.getElementById(
+                    "adminId"
+                );
+
+
+            const adminRoleInput =
+                document.getElementById(
+                    "adminRole"
+                );
+
+
+            const adminProfileImageInput =
+                document.getElementById(
+                    "adminProfileImageInput"
+                );
+
+
+            const adminLargeAvatar =
+                document.getElementById(
+                    "adminLargeAvatar"
+                );
+
+
+            const adminDisplayName =
+                document.getElementById(
+                    "adminDisplayName"
+                );
+
+
+            const saveAdminProfileButton =
+                document.getElementById(
+                    "saveAdminProfileButton"
+                );
+
+
+            const adminProfileMessage =
+                document.getElementById(
+                    "adminProfileMessage"
+                );
+
+
+            // ==========================================
+            // DROPDOWN
+            // ==========================================
+
+            const adminProfileToggle =
+                document.getElementById(
+                    "adminProfileToggle"
+                );
+
+
+            const adminProfileDropdown =
+                document.getElementById(
+                    "adminProfileDropdown"
+                );
+
+
+            if (
+                adminProfileToggle &&
+                adminProfileDropdown
+            ) {
+
+                adminProfileToggle.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+
+                        adminProfileDropdown.classList.toggle(
+                            "show"
+                        );
+
+                    }
+                );
+
+
+                document.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (
+                            !adminProfileToggle.contains(
+                                event.target
+                            ) &&
+                            !adminProfileDropdown.contains(
+                                event.target
+                            )
+                        ) {
+
+                            adminProfileDropdown.classList.remove(
+                                "show"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            // ==========================================
+            // MESSAGE
+            // ==========================================
+
+            function showAdminMessage(
+                message,
+                type
+            ) {
+
+                adminProfileMessage.textContent =
+                    message;
+
+
+                adminProfileMessage.className =
+                    "admin-profile-message " +
+                    type;
+
+
+                adminProfileMessage.style.display =
+                    "block";
+
+
+                setTimeout(
+                    function () {
+
+                        adminProfileMessage.style.display =
+                            "none";
+
+                    },
+                    4000
+                );
+
+            }
+
+
+            // ==========================================
+            // INITIAL
+            // ==========================================
+
+            function getAdminInitial(name) {
+
+                if (
+                    !name ||
+                    String(name).trim() === ""
+                ) {
+
+                    return "A";
+
+                }
+
+
+                return String(name)
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+            }
+
+
+            // ==========================================
+            // DISPLAY LARGE IMAGE
+            // ==========================================
+
+            function displayAdminImage(
+                image,
+                name
+            ) {
+
+                adminLargeAvatar.innerHTML =
+                    "";
+
+
+                if (
+                    image &&
+                    String(image).trim() !== ""
+                ) {
+
+                    const img =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    img.src =
+                        image;
+
+
+                    img.alt =
+                        "Admin Profile";
+
+
+                    img.onerror =
+                        function () {
+
+                            adminLargeAvatar.textContent =
+                                getAdminInitial(name);
+
+                        };
+
+
+                    adminLargeAvatar.appendChild(
+                        img
+                    );
+
+                }
+                else {
+
+                    adminLargeAvatar.textContent =
+                        getAdminInitial(name);
+
+                }
+
+            }
+
+
+            // ==========================================
+            // LOAD ADMIN PROFILE
+            // ==========================================
+
+            async function loadAdminProfile() {
+
+                if (!adminProfileToken) {
+
+                    window.location.href =
+                        "/Auth/Login";
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/admin/me",
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    "Authorization":
+                                        "Bearer " +
+                                        adminProfileToken,
+
+                                    "Content-Type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (
+                        response.status === 401 ||
+                        response.status === 403
+                    ) {
+
+                        localStorage.removeItem(
+                            "jwtToken"
+                        );
+
+                        localStorage.removeItem(
+                            "loggedInUser"
+                        );
+
+
+                        window.location.href =
+                            "/Auth/Login";
+
+
+                        return;
+
+                    }
+
+
+                    if (!response.ok) {
+
+                        const error =
+                            await response.json()
+                                .catch(
+                                    function () {
+                                        return {};
+                                    }
+                                );
+
+
+                        throw new Error(
+                            error.message ||
+                            "Unable to load admin profile."
+                        );
+
+                    }
+
+
+                    currentAdmin =
+                        await response.json();
+
+
+                    // =================================
+                    // FILL FORM
+                    // =================================
+
+                    adminIdInput.value =
+                        "ADM" +
+                        String(
+                            currentAdmin.id
+                        ).padStart(
+                            3,
+                            "0"
+                        );
+
+
+                    adminNameInput.value =
+                        currentAdmin.name ||
+                        "";
+
+
+                    adminEmailInput.value =
+                        currentAdmin.email ||
+                        "";
+
+
+                    adminPhoneInput.value =
+                        currentAdmin.phone ||
+                        "";
+
+
+                    adminRoleInput.value =
+                        "ADMIN";
+
+
+                    adminDisplayName.textContent =
+                        currentAdmin.name ||
+                        "Admin";
+
+
+                    displayAdminImage(
+                        currentAdmin.profileImage,
+                        currentAdmin.name
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Admin profile loading error:",
+                        error
+                    );
+
+
+                    showAdminMessage(
+                        error.message ||
+                        "Unable to load admin profile.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==========================================
+            // IMAGE SELECT
+            // ==========================================
+
+            adminProfileImageInput.addEventListener(
+                "change",
+                function (event) {
+
+                    const file =
+                        event.target.files[0];
+
+
+                    if (!file) {
+                        return;
+                    }
+
+
+                    if (
+                        file.size >
+                        2 * 1024 * 1024
+                    ) {
+
+                        showAdminMessage(
+                            "Profile image must be smaller than 2 MB.",
+                            "error"
+                        );
+
+
+                        adminProfileImageInput.value =
+                            "";
+
+
+                        return;
+
+                    }
+
+
+                    const allowedTypes = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ];
+
+
+                    if (
+                        !allowedTypes.includes(
+                            file.type
+                        )
+                    ) {
+
+                        showAdminMessage(
+                            "Please select a JPG, PNG or WEBP image.",
+                            "error"
+                        );
+
+
+                        adminProfileImageInput.value =
+                            "";
+
+
+                        return;
+
+                    }
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function (eventResult) {
+
+                            selectedAdminProfileImage =
+                                eventResult.target.result;
+
+
+                            displayAdminImage(
+                                selectedAdminProfileImage,
+                                adminNameInput.value
+                            );
+
+                        };
+
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+
+            // ==========================================
+            // SAVE PROFILE
+            // ==========================================
+
+            adminProfileForm.addEventListener(
+                "submit",
+                async function (event) {
+
+                    event.preventDefault();
+
+
+                    const name =
+                        adminNameInput.value.trim();
+
+
+                    const email =
+                        adminEmailInput.value.trim();
+
+
+                    const phone =
+                        adminPhoneInput.value.trim();
+
+
+                    if (!name) {
+
+                        showAdminMessage(
+                            "Please enter your name.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (!email) {
+
+                        showAdminMessage(
+                            "Please enter your email.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !phone.match(
+                            /^[0-9]{10}$/
+                        )
+                    ) {
+
+                        showAdminMessage(
+                            "Please enter a valid 10-digit phone number.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    saveAdminProfileButton.disabled =
+                        true;
+
+
+                    saveAdminProfileButton.textContent =
+                        "Saving...";
+
+
+                    try {
+
+                        let imageToSave =
+                            null;
+
+
+                        if (
+                            selectedAdminProfileImage
+                        ) {
+
+                            imageToSave =
+                                selectedAdminProfileImage;
+
+                        }
+                        else if (
+                            currentAdmin &&
+                            currentAdmin.profileImage
+                        ) {
+
+                            imageToSave =
+                                currentAdmin.profileImage;
+
+                        }
+
+
+                        const requestData = {
+
+                            name:
+                                name,
+
+                            email:
+                                email,
+
+                            phone:
+                                phone,
+
+                            profileImage:
+                                imageToSave
+
+                        };
+
+
+                        const response =
+                            await fetch(
+                                "/api/admin/me",
+                                {
+                                    method: "PUT",
+
+                                    headers: {
+                                        "Authorization":
+                                            "Bearer " +
+                                            adminProfileToken,
+
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify(
+                                            requestData
+                                        )
+                                }
+                            );
+
+
+                        const result =
+                            await response.json();
+
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                result.message ||
+                                "Unable to update admin profile."
+                            );
+
+                        }
+
+
+                        currentAdmin =
+                            result;
+
+
+                        selectedAdminProfileImage =
+                            null;
+
+
+                        adminProfileImageInput.value =
+                            "";
+
+
+                        // =================================
+                        // UPDATE FORM
+                        // =================================
+
+                        adminNameInput.value =
+                            result.name || "";
+
+
+                        adminEmailInput.value =
+                            result.email || "";
+
+
+                        adminPhoneInput.value =
+                            result.phone || "";
+
+
+                        adminIdInput.value =
+                            "ADM" +
+                            String(
+                                result.id
+                            ).padStart(
+                                3,
+                                "0"
+                            );
+
+
+                        adminRoleInput.value =
+                            "ADMIN";
+
+
+                        adminDisplayName.textContent =
+                            result.name ||
+                            "Admin";
+
+
+                        displayAdminImage(
+                            result.profileImage,
+                            result.name
+                        );
+
+
+                        // =================================
+                        // UPDATE LOCAL STORAGE
+                        // =================================
+
+                        const storedUser =
+                            localStorage.getItem(
+                                "loggedInUser"
+                            );
+
+
+                        if (storedUser) {
+
+                            try {
+
+                                const user =
+                                    JSON.parse(
+                                        storedUser
+                                    );
+
+
+                                user.name =
+                                    result.name;
+
+
+                                user.email =
+                                    result.email;
+
+
+                                user.profileImage =
+                                    result.profileImage ||
+                                    "";
+
+
+                                localStorage.setItem(
+                                    "loggedInUser",
+                                    JSON.stringify(
+                                        user
+                                    )
+                                );
+
+                            }
+                            catch (storageError) {
+
+                                console.error(
+                                    "Storage update error:",
+                                    storageError
+                                );
+
+                            }
+
+                        }
+
+
+                        showAdminMessage(
+                            "Profile updated successfully.",
+                            "success"
+                        );
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Admin profile update error:",
+                            error
+                        );
+
+
+                        showAdminMessage(
+                            error.message ||
+                            "Unable to update profile.",
+                            "error"
+                        );
+
+                    }
+                    finally {
+
+                        saveAdminProfileButton.disabled =
+                            false;
+
+
+                        saveAdminProfileButton.textContent =
+                            "Save Changes";
+
+                    }
+
+                }
+            );
+
+
+            // ==========================================
+            // LOGOUT
+            // ==========================================
+
+            const adminProfileLogout =
+                document.getElementById(
+                    "adminProfileLogout"
+                );
+
+
+            async function adminLogout() {
+
+                const currentToken =
+                    localStorage.getItem(
+                        "jwtToken"
+                    );
+
+
+                try {
+
+                    await fetch(
+                        "/api/auth/logout",
+                        {
+                            method: "POST",
+
+                            headers: currentToken
+                                ? {
+                                    "Authorization":
+                                        "Bearer " +
+                                        currentToken
+                                }
+                                : {}
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Logout API error:",
+                        error
+                    );
+
+                }
+                finally {
+
+                    localStorage.removeItem(
+                        "jwtToken"
+                    );
+
+
+                    localStorage.removeItem(
+                        "loggedInUser"
+                    );
+
+
+                    window.location.href =
+                        "/";
+
+                }
+
+            }
+
+
+            if (adminProfileLogout) {
+
+                adminProfileLogout.addEventListener(
+                    "click",
+                    async function (event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+                        await adminLogout();
+
+                    }
+                );
+
+            }
+
+
+            // ==========================================
+            // START
+            // ==========================================
+
+            loadAdminProfile();
+
+    </script>
+
+</body>
+
+</html>

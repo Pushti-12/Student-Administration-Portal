@@ -1,0 +1,1205 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Teachers - Admin</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            body {
+                background: #f5f7fb;
+                color: #1f2937;
+            }
+
+            .navbar {
+                height: 70px;
+                background: white;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 35px;
+            }
+
+            .brand {
+                font-size: 22px;
+                font-weight: 700;
+                color: #2563eb;
+            }
+
+            .back {
+                color: #374151;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: auto;
+                padding: 35px;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+                .header h1 {
+                    font-size: 40px;
+                    font-weight: 400;
+                }
+
+                .header p {
+                    color: #6b7280;
+                    margin-top: 6px;
+                }
+
+            button {
+                border: 0;
+                border-radius: 6px;
+                padding: 9px 15px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+                button:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
+            .add {
+                background: #2563eb;
+                color: white;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+            }
+
+            .table-card {
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                overflow: auto;
+            }
+
+            th,
+            td {
+                padding: 15px;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left;
+                white-space: nowrap;
+            }
+
+            th {
+                background: #f9fafb;
+                color: #4b5563;
+                font-size: 14px;
+            }
+
+            .edit {
+                background: #fef3c7;
+                color: #92400e;
+                margin-right: 6px;
+            }
+
+            .delete {
+                background: #fee2e2;
+                color: #b91c1c;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: #0007;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                z-index: 1000;
+            }
+
+            .modal-box {
+                background: white;
+                width: 100%;
+                max-width: 500px;
+                padding: 25px;
+                border-radius: 12px;
+            }
+
+            .modal-head {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                align-items: center;
+            }
+
+            .close {
+                background: none;
+                font-size: 24px;
+                padding: 4px 8px;
+            }
+
+            .group {
+                margin-bottom: 15px;
+            }
+
+            label {
+                display: block;
+                font-weight: 600;
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+            input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                outline: none;
+            }
+
+                input:focus {
+                    border-color: #2563eb;
+                }
+
+            .actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+            }
+
+            .cancel {
+                background: #e5e7eb;
+            }
+
+            .save {
+                background: #2563eb;
+                color: white;
+            }
+
+            .message {
+                display: none;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 7px;
+            }
+
+            .success {
+                display: block;
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            .error {
+                display: block;
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .loading-row {
+                text-align: center;
+                padding: 30px;
+                color: #6b7280;
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- NAVBAR -->
+    <!-- ========================= -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+            Student Management System
+        </div>
+
+        <a href="/Admin/Dashboard" class="back">
+            ← Dashboard
+        </a>
+
+    </nav>
+
+
+    <!-- ========================= -->
+    <!-- MAIN -->
+    <!-- ========================= -->
+
+    <main class="container">
+
+        <div id="message" class="message"></div>
+
+        <div class="header">
+
+            <div>
+                <h1>Teacher Management</h1>
+
+                <p>
+                    Add, view, update and delete teachers.
+                </p>
+            </div>
+
+            <button type="button"
+                    class="add"
+                    onclick="openAdd()">
+                + Add Teacher
+            </button>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- TEACHER TABLE -->
+        <!-- ========================= -->
+
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Teacher ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="teacherBody">
+
+                    <tr>
+                        <td colspan="5"
+                            class="loading-row">
+                            Loading teachers...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- ========================= -->
+    <!-- ADD / EDIT MODAL -->
+    <!-- ========================= -->
+
+    <div class="modal" id="modal">
+
+        <div class="modal-box">
+
+            <div class="modal-head">
+
+                <h2 id="title">
+                    Add Teacher
+                </h2>
+
+                <button type="button"
+                        class="close"
+                        onclick="closeModal()">
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="form">
+
+                <!-- ID -->
+                <input type="hidden"
+                       id="id" />
+
+
+                <!-- NAME -->
+                <div class="group">
+
+                    <label for="name">
+                        Name
+                    </label>
+
+                    <input type="text"
+                           id="name"
+                           placeholder="Enter teacher name"
+                           required />
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input type="email"
+                           id="email"
+                           placeholder="Enter email address"
+                           required />
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="group"
+                     id="passwordBox">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input type="password"
+                           id="password"
+                           placeholder="Enter password"
+                           required />
+
+                </div>
+
+
+                <!-- PHONE -->
+                <div class="group">
+
+                    <label for="phone">
+                        Phone
+                    </label>
+
+                    <input type="tel"
+                           id="phone"
+                           placeholder="Enter 10-digit phone number"
+                           maxlength="10"
+                           minlength="10"
+                           pattern="[0-9]{10}"
+                           inputmode="numeric"
+                           required />
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="actions">
+
+                    <button type="button"
+                            class="cancel"
+                            onclick="closeModal()">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                            class="save"
+                            id="saveButton">
+                        Save Teacher
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+            // ==================================================
+            // AUTHENTICATION
+            // ==================================================
+
+            const token =
+                localStorage.getItem("jwtToken");
+
+            const user =
+                JSON.parse(
+                    localStorage.getItem("loggedInUser") || "null"
+                );
+
+
+            if (!token || !user) {
+                window.location.href = "/";
+            }
+
+            if (
+                user &&
+                String(user.role).toUpperCase() !== "ADMIN"
+            ) {
+                window.location.href = "/";
+            }
+
+
+            // ==================================================
+            // ELEMENTS
+            // ==================================================
+
+            const teacherBody =
+                document.getElementById("teacherBody");
+
+            const modal =
+                document.getElementById("modal");
+
+            const form =
+                document.getElementById("form");
+
+            const message =
+                document.getElementById("message");
+
+            const idInput =
+                document.getElementById("id");
+
+            const nameInput =
+                document.getElementById("name");
+
+            const emailInput =
+                document.getElementById("email");
+
+            const passwordInput =
+                document.getElementById("password");
+
+            const passwordBox =
+                document.getElementById("passwordBox");
+
+            const phoneInput =
+                document.getElementById("phone");
+
+            const title =
+                document.getElementById("title");
+
+            const saveButton =
+                document.getElementById("saveButton");
+
+
+            // ==================================================
+            // TEACHER DATA
+            // ==================================================
+
+            let teachers = [];
+
+
+            // ==================================================
+            // MESSAGE
+            // ==================================================
+
+            function showMessage(text, type) {
+
+                message.textContent = text;
+
+                message.className =
+                    `message ${type}`;
+
+                message.style.display =
+                    "block";
+
+                setTimeout(() => {
+
+                    message.style.display =
+                        "none";
+
+                    message.className =
+                        "message";
+
+                }, 3500);
+            }
+
+
+            // ==================================================
+            // API ERROR MESSAGE
+            // ==================================================
+
+            async function getErrorMessage(response, fallback) {
+
+                try {
+
+                    const text =
+                        await response.text();
+
+                    if (!text) {
+                        return fallback;
+                    }
+
+                    try {
+
+                        const data =
+                            JSON.parse(text);
+
+                        if (data.message) {
+                            return data.message;
+                        }
+
+                        if (data.title) {
+                            return data.title;
+                        }
+
+                        if (data.errors) {
+
+                            const errors = [];
+
+                            Object.values(data.errors)
+                                .forEach(errorList => {
+
+                                    if (Array.isArray(errorList)) {
+
+                                        errorList.forEach(error => {
+                                            errors.push(error);
+                                        });
+
+                                    }
+
+                                });
+
+                            if (errors.length > 0) {
+                                return errors.join(" ");
+                            }
+                        }
+
+                        return text;
+
+                    }
+                    catch {
+
+                        return text;
+                    }
+
+                }
+                catch {
+
+                    return fallback;
+                }
+            }
+
+
+            // ==================================================
+            // LOAD TEACHERS
+            // GET /api/teachers
+            // ==================================================
+
+            async function loadTeachers() {
+
+                teacherBody.innerHTML = `
+                            <tr>
+                                <td colspan="5"
+                                    class="loading-row">
+                                    Loading teachers...
+                                </td>
+                            </tr>
+                        `;
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/teachers",
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        const errorMessage =
+                            await getErrorMessage(
+                                response,
+                                "Unable to load teachers."
+                            );
+
+                        throw new Error(errorMessage);
+                    }
+
+
+                    teachers =
+                        await response.json();
+
+
+                    teacherBody.innerHTML = "";
+
+
+                    if (
+                        !Array.isArray(teachers) ||
+                        teachers.length === 0
+                    ) {
+
+                        teacherBody.innerHTML = `
+                                    <tr>
+                                        <td colspan="5"
+                                            class="loading-row">
+                                            No teachers found.
+                                        </td>
+                                    </tr>
+                                `;
+
+                        return;
+                    }
+
+
+                    teachers.forEach(t => {
+
+                        const row =
+                            document.createElement("tr");
+
+
+                        row.innerHTML = `
+
+                                    <td>
+                                        ${escapeHtml(t.teacherId ?? "")}
+                                    </td>
+
+                                    <td>
+                                        ${escapeHtml(t.name ?? "")}
+                                    </td>
+
+                                    <td>
+                                        ${escapeHtml(t.email ?? "")}
+                                    </td>
+
+                                    <td>
+                                        ${escapeHtml(t.phone ?? "")}
+                                    </td>
+
+                                    <td>
+
+                                        <button
+                                            type="button"
+                                            class="edit"
+                                            onclick="editTeacher(${Number(t.id)})">
+
+                                            Edit
+
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            class="delete"
+                                            onclick="deleteTeacher(${Number(t.id)})">
+
+                                            Delete
+
+                                        </button>
+
+                                    </td>
+                                `;
+
+                        teacherBody.appendChild(row);
+
+                    });
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Teacher loading error:",
+                        error
+                    );
+
+                    teacherBody.innerHTML = `
+                                <tr>
+                                    <td colspan="5"
+                                        class="loading-row">
+                                        Unable to load teachers.
+                                    </td>
+                                </tr>
+                            `;
+
+                    showMessage(
+                        error.message ||
+                        "Unable to load teachers.",
+                        "error"
+                    );
+                }
+            }
+
+
+            // ==================================================
+            // OPEN ADD
+            // ==================================================
+
+            function openAdd() {
+
+                form.reset();
+
+                idInput.value = "";
+
+                title.textContent =
+                    "Add Teacher";
+
+                passwordBox.style.display =
+                    "block";
+
+                passwordInput.required =
+                    true;
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    "Save Teacher";
+
+                modal.style.display =
+                    "flex";
+            }
+
+
+            // ==================================================
+            // CLOSE MODAL
+            // ==================================================
+
+            function closeModal() {
+
+                modal.style.display =
+                    "none";
+
+                form.reset();
+
+                idInput.value = "";
+            }
+
+
+            // ==================================================
+            // EDIT TEACHER
+            // NO GET /api/teachers/{id}
+            // USE ALREADY LOADED TEACHERS
+            // ==================================================
+
+            function editTeacher(id) {
+
+                console.log(
+                    "Editing teacher ID:",
+                    id
+                );
+
+
+                if (!id || Number(id) <= 0) {
+
+                    showMessage(
+                        "Invalid teacher ID.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const teacher =
+                    teachers.find(
+                        t =>
+                            Number(t.id) === Number(id)
+                    );
+
+
+                if (!teacher) {
+
+                    showMessage(
+                        "Teacher data not found.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // Fill modal
+                idInput.value =
+                    teacher.id ?? id;
+
+                nameInput.value =
+                    teacher.name ?? "";
+
+                emailInput.value =
+                    teacher.email ?? "";
+
+                phoneInput.value =
+                    teacher.phone ?? "";
+
+
+                // Password is not editable
+                passwordBox.style.display =
+                    "none";
+
+                passwordInput.required =
+                    false;
+
+                passwordInput.value =
+                    "";
+
+
+                title.textContent =
+                    "Edit Teacher";
+
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    "Update Teacher";
+
+
+                modal.style.display =
+                    "flex";
+            }
+
+
+            // ==================================================
+            // PHONE INPUT
+            // ==================================================
+
+            phoneInput.addEventListener(
+                "input",
+                function() {
+
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+
+                }
+            );
+
+
+            // ==================================================
+            // FORM SUBMIT
+            // ADD / UPDATE
+            // ==================================================
+
+            form.addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    // Browser form validation
+                    if (!form.checkValidity()) {
+
+                        form.reportValidity();
+
+                        return;
+                    }
+
+
+                    const id =
+                        idInput.value.trim();
+
+
+                    const isEdit =
+                        id !== "";
+
+
+                    const name =
+                        nameInput.value.trim();
+
+                    const email =
+                        emailInput.value.trim();
+
+                    const phone =
+                        phoneInput.value.trim();
+
+
+                    // Additional phone validation
+                    if (!/^\d{10}$/.test(phone)) {
+
+                        showMessage(
+                            "Phone number must be exactly 10 digits.",
+                            "error"
+                        );
+
+                        phoneInput.focus();
+
+                        return;
+                    }
+
+
+                    let data;
+
+
+                    // ==================================================
+                    // UPDATE
+                    // PUT /api/teachers/{id}
+                    // ==================================================
+
+                    if (isEdit) {
+
+                        data = {
+
+                            name: name,
+
+                            email: email,
+
+                            phone: phone
+
+                        };
+
+                    }
+
+
+                    // ==================================================
+                    // CREATE
+                    // POST /api/teachers
+                    // ==================================================
+
+                    else {
+
+                        const password =
+                            passwordInput.value;
+
+
+                        data = {
+
+                            name: name,
+
+                            email: email,
+
+                            password: password,
+
+                            phone: phone
+
+                        };
+
+                    }
+
+
+                    saveButton.disabled =
+                        true;
+
+                    saveButton.textContent =
+                        isEdit
+                            ? "Updating..."
+                            : "Saving...";
+
+
+                    try {
+
+                        const url =
+                            isEdit
+                                ? `/api/teachers/${id}`
+                                : "/api/teachers";
+
+
+                        const method =
+                            isEdit
+                                ? "PUT"
+                                : "POST";
+
+
+                        console.log(
+                            "Teacher API Request:",
+                            {
+                                method: method,
+                                url: url,
+                                data: data
+                            }
+                        );
+
+
+                        const response =
+                            await fetch(
+                                url,
+                                {
+                                    method: method,
+
+                                    headers: {
+                                        "Authorization":
+                                            `Bearer ${token}`,
+
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify(data)
+                                }
+                            );
+
+
+                        if (!response.ok) {
+
+                            const errorMessage =
+                                await getErrorMessage(
+                                    response,
+                                    "Teacher operation failed."
+                                );
+
+                            throw new Error(
+                                errorMessage
+                            );
+                        }
+
+
+                        closeModal();
+
+
+                        showMessage(
+                            isEdit
+                                ? "Teacher updated successfully."
+                                : "Teacher added successfully.",
+                            "success"
+                        );
+
+
+                        await loadTeachers();
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Teacher save error:",
+                            error
+                        );
+
+                        showMessage(
+                            error.message ||
+                            "Unable to save teacher.",
+                            "error"
+                        );
+
+                    }
+                    finally {
+
+                        saveButton.disabled =
+                            false;
+
+                        saveButton.textContent =
+                            isEdit
+                                ? "Update Teacher"
+                                : "Save Teacher";
+                    }
+
+                }
+            );
+
+
+            // ==================================================
+            // DELETE TEACHER
+            // DELETE /api/teachers/{id}
+            // ==================================================
+
+            async function deleteTeacher(id) {
+
+                if (!id || Number(id) <= 0) {
+
+                    showMessage(
+                        "Invalid teacher ID.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                const confirmed =
+                    confirm(
+                        "Are you sure you want to delete this teacher?"
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/teachers/${id}`,
+                            {
+                                method: "DELETE",
+
+                                headers: {
+                                    "Authorization":
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        const errorMessage =
+                            await getErrorMessage(
+                                response,
+                                "Unable to delete teacher."
+                            );
+
+                        throw new Error(errorMessage);
+                    }
+
+
+                    showMessage(
+                        "Teacher deleted successfully.",
+                        "success"
+                    );
+
+
+                    await loadTeachers();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Delete teacher error:",
+                        error
+                    );
+
+                    showMessage(
+                        error.message ||
+                        "Unable to delete teacher.",
+                        "error"
+                    );
+                }
+            }
+
+
+            // ==================================================
+            // ESCAPE HTML
+            // ==================================================
+
+            function escapeHtml(value) {
+
+                return String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+
+            // ==================================================
+            // INITIAL LOAD
+            // ==================================================
+
+            loadTeachers();
+
+    </script>
+
+</body>
+</html>

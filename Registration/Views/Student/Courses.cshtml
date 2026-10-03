@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "My Courses";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-kicker">
+            MY ACADEMICS
+        </span>
+
+        <h1>
+            My Courses
+        </h1>
+
+        <p>
+            View your enrolled course and assigned teacher.
+        </p>
+
+    </div>
+
+</div>
+
+
+<section class="card">
+
+    <div id="course">
+
+        <div class="loading">
+            Loading course...
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "loggedInUser"
+            ) || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        user.role.toUpperCase() !== "STUDENT"
+    ) {
+        location.href = "/";
+    }
+
+
+    async function loadCourse() {
+
+        try {
+
+            const studentResponse =
+                await fetch(
+                    "/api/students/me",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!studentResponse.ok) {
+                throw new Error();
+            }
+
+
+            const student =
+                await studentResponse.json();
+
+
+            localStorage.setItem(
+                "studentId",
+                student.id
+            );
+
+
+            const coursesResponse =
+                await fetch(
+                    "/api/courses",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!coursesResponse.ok) {
+                throw new Error();
+            }
+
+
+            const courses =
+                await coursesResponse.json();
+
+
+            const course =
+                courses.find(
+                    c =>
+                        Number(c.id) ===
+                        Number(student.courseId)
+                );
+
+
+            if (!course) {
+
+                document.getElementById(
+                    "course"
+                ).innerHTML = `
+                        <div class="empty">
+                            Course information not available.
+                        </div>
+                    `;
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "course"
+            ).innerHTML = `
+
+                    <div class="profile-header">
+
+                        <div class="profile-avatar">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                ${course.courseName}
+                            </h2>
+
+                            <p>
+                                ${course.courseCode}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-grid">
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Course Name
+                            </span>
+
+                            <div class="detail-value">
+                                ${course.courseName}
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Course Code
+                            </span>
+
+                            <div class="detail-value">
+                                ${course.courseCode}
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Faculty
+                            </span>
+
+                            <div class="detail-value">
+                                ${course.teacherName ||
+                "Not assigned"}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "course"
+            ).innerHTML = `
+                    <div class="error">
+                        Unable to load course information.
+                    </div>
+                `;
+
+        }
+
+    }
+
+
+    loadCourse();
+
+</script>

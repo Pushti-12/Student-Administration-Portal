@@ -1,0 +1,1100 @@
+﻿@{
+    ViewData["Title"] = "Teacher Dashboard";
+}
+
+<div class="teacher-dashboard">
+
+    <!-- =========================
+         PAGE HEADER
+         ========================= -->
+
+    <div class="dashboard-header">
+
+        <div>
+            <h1>Teacher Dashboard</h1>
+
+            <p>
+                Welcome back! Manage your courses, students,
+                attendance and marks.
+            </p>
+        </div>
+
+        <div class="dashboard-date">
+            @DateTime.Today.ToString("dd MMM yyyy")
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ERROR
+         ========================= -->
+
+    <div id="pageError"
+         class="page-error"
+         style="display:none;">
+    </div>
+
+
+    <!-- =========================
+         TEACHER PROFILE HEADER
+         ========================= -->
+
+    <section class="teacher-hero">
+
+        <div class="teacher-hero-content">
+
+            <div class="teacher-avatar">
+                👨‍🏫
+            </div>
+
+            <div>
+
+                <span class="hero-label">
+                    TEACHER PORTAL
+                </span>
+
+                <h2>
+                    Welcome,
+                    <span id="teacherName">
+                        Teacher
+                    </span>
+                    👋
+                </h2>
+
+                <p>
+                    Your teaching workspace
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="teacher-id-box">
+
+            <span>Teacher ID</span>
+
+            <strong id="teacherId">
+                —
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         STATISTICS
+         ========================= -->
+
+    <section class="stats-grid">
+
+
+        <!-- COURSES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+                📚
+            </div>
+
+            <div>
+
+                <span class="stat-title">
+                    My Courses
+                </span>
+
+                <strong id="courseCount"
+                        class="stat-value">
+                    0
+                </strong>
+
+                <span class="stat-subtitle">
+                    Assigned courses
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- STUDENTS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+                👨‍🎓
+            </div>
+
+            <div>
+
+                <span class="stat-title">
+                    My Students
+                </span>
+
+                <strong id="studentCount"
+                        class="stat-value">
+                    0
+                </strong>
+
+                <span class="stat-subtitle">
+                    Enrolled students
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ATTENDANCE -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                ✅
+            </div>
+
+            <div>
+
+                <span class="stat-title">
+                    Attendance
+                </span>
+
+                <strong id="attendanceCount"
+                        class="stat-value">
+                    0
+                </strong>
+
+                <span class="stat-subtitle">
+                    Attendance records
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- MARKS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon orange">
+                📝
+            </div>
+
+            <div>
+
+                <span class="stat-title">
+                    Marks
+                </span>
+
+                <strong id="marksCount"
+                        class="stat-value">
+                    0
+                </strong>
+
+                <span class="stat-subtitle">
+                    Marks records
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         MAIN GRID
+         ========================= -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- =========================
+             MY COURSES
+             ========================= -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        My Courses
+                    </h2>
+
+                    <p>
+                        Courses currently assigned to you
+                    </p>
+
+                </div>
+
+
+                <a href="/Teacher/Courses"
+                   class="view-all">
+
+                    View All →
+
+                </a>
+
+            </div>
+
+
+            <div id="coursesList">
+
+                <div class="loading">
+                    Loading courses...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             QUICK ACTIONS
+             ========================= -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                    <p>
+                        Access teaching modules
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <a href="/Teacher/Courses"
+                   class="quick-action">
+
+                    <div class="quick-action-icon blue">
+                        📚
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            My Courses
+                        </strong>
+
+                        <span>
+                            View assigned courses
+                        </span>
+
+                    </div>
+
+                    <span class="action-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="/Teacher/Students"
+                   class="quick-action">
+
+                    <div class="quick-action-icon green">
+                        👨‍🎓
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Students
+                        </strong>
+
+                        <span>
+                            View enrolled students
+                        </span>
+
+                    </div>
+
+                    <span class="action-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="/Teacher/Attendance"
+                   class="quick-action">
+
+                    <div class="quick-action-icon purple">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Attendance
+                        </strong>
+
+                        <span>
+                            Mark student attendance
+                        </span>
+
+                    </div>
+
+                    <span class="action-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="/Teacher/Marks"
+                   class="quick-action">
+
+                    <div class="quick-action-icon orange">
+                        📝
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Marks
+                        </strong>
+
+                        <span>
+                            Add and view marks
+                        </span>
+
+                    </div>
+
+                    <span class="action-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+    /* =========================
+           TEACHER DASHBOARD
+           ========================= */
+
+    .teacher-dashboard {
+        width: 100%;
+    }
+
+
+    /* =========================
+           HERO
+           ========================= */
+
+    .teacher-hero {
+        background: linear-gradient( 135deg, #1558d6 0%, #2563eb 100% );
+        border-radius: 14px;
+        padding: 25px 28px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 25px rgba(37,99,235,.16);
+    }
+
+    .teacher-hero-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .teacher-avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.2);
+        font-size: 28px;
+    }
+
+    .hero-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        opacity: .72;
+    }
+
+    .teacher-hero h2 {
+        margin: 5px 0;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .teacher-hero p {
+        margin: 0;
+        font-size: 12px;
+        color: rgba(255,255,255,.75);
+    }
+
+
+    .teacher-id-box {
+        min-width: 140px;
+        padding: 14px 18px;
+        text-align: center;
+        border-radius: 10px;
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.2);
+    }
+
+        .teacher-id-box span {
+            display: block;
+            font-size: 10px;
+            opacity: .72;
+            margin-bottom: 5px;
+        }
+
+        .teacher-id-box strong {
+            font-size: 18px;
+        }
+
+
+    /* =========================
+           STAT CARD
+           ========================= */
+
+    .stat-title {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .stat-value {
+        display: block;
+        color: #172033;
+        font-size: 25px;
+        line-height: 1.1;
+    }
+
+    .stat-subtitle {
+        display: block;
+        color: #94a3b8;
+        font-size: 10px;
+        margin-top: 4px;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 11px;
+        font-size: 20px;
+    }
+
+        .stat-icon.blue {
+            background: #eff6ff;
+        }
+
+        .stat-icon.green {
+            background: #ecfdf5;
+        }
+
+        .stat-icon.purple {
+            background: #f5f3ff;
+        }
+
+        .stat-icon.orange {
+            background: #fff7ed;
+        }
+
+
+    /* =========================
+           CARDS
+           ========================= */
+
+    .dashboard-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 3px 12px rgba(15,23,42,.04);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+        .card-header h2 {
+            margin: 0 0 5px;
+            color: #172033;
+            font-size: 18px;
+        }
+
+        .card-header p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+    .view-all {
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+
+    /* =========================
+           COURSE ITEMS
+           ========================= */
+
+    .course-item {
+        padding: 14px;
+        border: 1px solid #edf0f4;
+        border-radius: 9px;
+        margin-bottom: 9px;
+        transition: .2s ease;
+    }
+
+        .course-item:hover {
+            background: #fafbff;
+            border-color: #dbe5ff;
+        }
+
+    .course-code {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 15px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 9px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .course-item h3 {
+        margin: 0 0 4px;
+        font-size: 14px;
+        color: #172033;
+    }
+
+    .course-item p {
+        margin: 0;
+        color: #64748b;
+        font-size: 10px;
+    }
+
+
+    /* =========================
+           QUICK ACTIONS
+           ========================= */
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .quick-action {
+        display: grid;
+        grid-template-columns: 42px 1fr auto;
+        align-items: center;
+        gap: 11px;
+        padding: 10px;
+        border: 1px solid #edf0f4;
+        border-radius: 9px;
+        text-decoration: none;
+        color: inherit;
+        transition: .2s ease;
+    }
+
+        .quick-action:hover {
+            background: #fafbff;
+            transform: translateX(2px);
+        }
+
+    .quick-action-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 18px;
+    }
+
+        .quick-action-icon.blue {
+            background: #eff6ff;
+        }
+
+        .quick-action-icon.green {
+            background: #ecfdf5;
+        }
+
+        .quick-action-icon.purple {
+            background: #f5f3ff;
+        }
+
+        .quick-action-icon.orange {
+            background: #fff7ed;
+        }
+
+    .quick-action strong {
+        display: block;
+        font-size: 12px;
+        color: #172033;
+    }
+
+    .quick-action span {
+        font-size: 10px;
+        color: #94a3b8;
+    }
+
+    .action-arrow {
+        color: #94a3b8;
+        font-size: 15px;
+    }
+
+
+    /* =========================
+           LOADING
+           ========================= */
+
+    .loading,
+    .empty {
+        padding: 30px 10px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+
+    /* =========================
+           ERROR
+           ========================= */
+
+    .page-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        border-radius: 8px;
+        padding: 11px 14px;
+        margin-bottom: 18px;
+        font-size: 12px;
+    }
+
+
+    /* =========================
+           MOBILE
+           ========================= */
+
+    @@media(max-width:900px) {
+
+        .teacher-hero {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+        }
+
+        .teacher-id-box {
+            width: 100%;
+        }
+    }
+
+    @@media(max-width:768px) {
+
+        .teacher-hero h2 {
+            font-size: 22px;
+        }
+    }
+
+</style>
+
+
+<script>
+
+    /* =========================
+       AUTH
+       ========================= */
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+    const user =
+        JSON.parse(
+            localStorage.getItem("loggedInUser") || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !== "TEACHER"
+    ) {
+        location.href = "/";
+    }
+
+
+    /* =========================
+       API HELPER
+       ========================= */
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            let message =
+                `Request failed: ${response.status}`;
+
+            try {
+
+                const data =
+                    await response.json();
+
+                message =
+                    data.message ||
+                    data.title ||
+                    message;
+
+            }
+            catch { }
+
+            throw new Error(message);
+        }
+
+
+        return await response.json();
+    }
+
+
+    /* =========================
+       LOAD DASHBOARD
+       ========================= */
+
+    async function initialize() {
+
+        try {
+
+            /*
+             * LOGGED-IN TEACHER
+             */
+
+            const teacher =
+                await getJson(
+                    "/api/teachers/me"
+                );
+
+
+            /*
+             * ALL COURSES
+             */
+
+            const allCourses =
+                await getJson(
+                    "/api/courses"
+                );
+
+
+            /*
+             * ALL STUDENTS
+             */
+
+            const allStudents =
+                await getJson(
+                    "/api/students"
+                );
+
+
+            /*
+             * TEACHER INFO
+             */
+
+            document.getElementById(
+                "teacherName"
+            ).textContent =
+                teacher.name;
+
+
+            document.getElementById(
+                "teacherId"
+            ).textContent =
+                teacher.teacherId;
+
+
+            /*
+             * ONLY THIS TEACHER'S COURSES
+             */
+
+            const myCourses =
+                allCourses.filter(
+                    course =>
+                        Number(course.teacherId) ===
+                        Number(teacher.id)
+                );
+
+
+            /*
+             * COURSE IDS
+             */
+
+            const courseIds =
+                myCourses.map(
+                    course =>
+                        Number(course.id)
+                );
+
+
+            /*
+             * ONLY THIS TEACHER'S STUDENTS
+             */
+
+            const myStudents =
+                allStudents.filter(
+                    student =>
+                        courseIds.includes(
+                            Number(student.courseId)
+                        )
+                );
+
+
+            /*
+             * COUNTS
+             */
+
+            document.getElementById(
+                "courseCount"
+            ).textContent =
+                myCourses.length;
+
+
+            document.getElementById(
+                "studentCount"
+            ).textContent =
+                myStudents.length;
+
+
+            /*
+             * SAVE DATA
+             */
+
+            window.teacherCourses =
+                myCourses;
+
+            window.teacherStudents =
+                myStudents;
+
+
+            /*
+             * RENDER COURSES
+             */
+
+            renderCourses(
+                myCourses,
+                myStudents
+            );
+
+
+            /*
+             * ATTENDANCE + MARKS
+             */
+
+            let totalAttendance = 0;
+            let totalMarks = 0;
+
+
+            for (const student of myStudents) {
+
+                try {
+
+                    const attendance =
+                        await getJson(
+                            `/api/attendance/student/${student.id}`
+                        );
+
+                    totalAttendance +=
+                        attendance.filter(
+                            item =>
+                                courseIds.includes(
+                                    Number(item.courseId)
+                                )
+                        ).length;
+
+                }
+                catch {
+                    // Ignore individual student errors
+                }
+
+
+                try {
+
+                    const marks =
+                        await getJson(
+                            `/api/marks/student/${student.id}`
+                        );
+
+                    totalMarks +=
+                        marks.filter(
+                            item =>
+                                courseIds.includes(
+                                    Number(item.courseId)
+                                )
+                        ).length;
+
+                }
+                catch {
+                    // Ignore individual student errors
+                }
+
+            }
+
+
+            document.getElementById(
+                "attendanceCount"
+            ).textContent =
+                totalAttendance;
+
+
+            document.getElementById(
+                "marksCount"
+            ).textContent =
+                totalMarks;
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            const errorBox =
+                document.getElementById(
+                    "pageError"
+                );
+
+
+            errorBox.style.display =
+                "block";
+
+
+            errorBox.textContent =
+                error.message ||
+                "Unable to load teacher dashboard data.";
+
+        }
+
+    }
+
+
+    /* =========================
+       RENDER COURSES
+       ========================= */
+
+    function renderCourses(
+        courses,
+        students
+    ) {
+
+        const container =
+            document.getElementById(
+                "coursesList"
+            );
+
+
+        if (!courses.length) {
+
+            container.innerHTML = `
+                    <div class="empty">
+                        No courses are currently assigned to you.
+                    </div>
+                `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            courses
+                .slice(0, 5)
+                .map(function (course) {
+
+                    const studentCount =
+                        students.filter(
+                            student =>
+                                Number(student.courseId) ===
+                                Number(course.id)
+                        ).length;
+
+
+                    return `
+                            <div class="course-item">
+
+                                <span class="course-code">
+                                    ${course.courseCode}
+                                </span>
+
+                                <h3>
+                                    ${course.courseName}
+                                </h3>
+
+                                <p>
+                                    ${studentCount}
+                                    student(s) enrolled
+                                </p>
+
+                            </div>
+                        `;
+
+                })
+                .join("");
+
+    }
+
+
+    /* =========================
+       START
+       ========================= */
+
+    initialize();
+
+</script>

@@ -1,0 +1,2071 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Courses - Admin</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            body {
+                background: #f5f7fb;
+                color: #1f2937;
+            }
+
+            .navbar {
+                height: 70px;
+                background: white;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 35px;
+            }
+
+            .brand {
+                font-size: 22px;
+                font-weight: 700;
+                color: #2563eb;
+            }
+
+            .back {
+                color: #374151;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: auto;
+                padding: 35px;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+                .header p {
+                    color: #6b7280;
+                    margin-top: 6px;
+                }
+
+            button {
+                border: 0;
+                border-radius: 6px;
+                padding: 9px 15px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+                button:disabled {
+                    opacity: .6;
+                    cursor: not-allowed;
+                }
+
+            .add {
+                background: #2563eb;
+                color: white;
+            }
+
+                .add:hover {
+                    background: #1d4ed8;
+                }
+
+            .table-card {
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                overflow: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                padding: 15px;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            th {
+                background: #f9fafb;
+                color: #4b5563;
+                font-size: 14px;
+            }
+
+            .edit {
+                background: #fef3c7;
+                color: #92400e;
+                margin-right: 5px;
+            }
+
+            .subject-button {
+                background: #dbeafe;
+                color: #1d4ed8;
+            }
+
+            .delete-subject {
+                background: #fee2e2;
+                color: #b91c1c;
+                padding: 5px 9px;
+                margin-left: 5px;
+            }
+
+            .subject-list {
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+                min-width: 200px;
+            }
+
+            .subject-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                background: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
+                padding: 6px 8px;
+            }
+
+            .subject-name {
+                color: #374151;
+                font-size: 13px;
+            }
+
+            .no-subject {
+                color: #9ca3af;
+                font-size: 13px;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: #0007;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                z-index: 1000;
+            }
+
+            .box {
+                background: white;
+                width: 100%;
+                max-width: 600px;
+                max-height: 90vh;
+                overflow-y: auto;
+                padding: 25px;
+                border-radius: 12px;
+            }
+
+            .head {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                align-items: center;
+            }
+
+            .close {
+                background: none;
+                font-size: 24px;
+                padding: 2px 8px;
+            }
+
+            .group {
+                margin-bottom: 15px;
+            }
+
+            label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 6px;
+            }
+
+            input,
+            select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #d1d5db;
+                border-radius: 6px;
+                outline: none;
+                background: white;
+            }
+
+                input:focus,
+                select:focus {
+                    border-color: #2563eb;
+                }
+
+            .actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .cancel {
+                background: #e5e7eb;
+            }
+
+            .save {
+                background: #2563eb;
+                color: white;
+            }
+
+            .message {
+                display: none;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 7px;
+            }
+
+            .success {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            .error {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+            .subject-section {
+                margin-top: 25px;
+                padding-top: 20px;
+                border-top: 1px solid #e5e7eb;
+            }
+
+                .subject-section h3 {
+                    margin-bottom: 12px;
+                    font-size: 17px;
+                }
+
+            .subject-add-row {
+                display: flex;
+                gap: 10px;
+            }
+
+                .subject-add-row input {
+                    flex: 1;
+                }
+
+            .subject-items {
+                margin-top: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .subject-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 9px 10px;
+                border: 1px solid #e5e7eb;
+                border-radius: 7px;
+                background: #f9fafb;
+            }
+
+            .subject-item-name {
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .subject-item-actions {
+                display: flex;
+                gap: 6px;
+            }
+
+            .small-edit {
+                background: #fef3c7;
+                color: #92400e;
+                padding: 5px 9px;
+            }
+
+            .small-delete {
+                background: #fee2e2;
+                color: #b91c1c;
+                padding: 5px 9px;
+            }
+
+            .note {
+                color: #6b7280;
+                font-size: 12px;
+                margin-top: 7px;
+            }
+
+            .loading {
+                color: #9ca3af;
+                padding: 8px 0;
+            }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="brand">
+            Student Management System
+        </div>
+
+        <a href="/Admin/Dashboard"
+           class="back">
+            ← Dashboard
+        </a>
+
+    </nav>
+
+
+    <main class="container">
+
+        <div id="message"
+             class="message">
+        </div>
+
+
+        <div class="header">
+
+            <div>
+
+                <h1>
+                    Course Management
+                </h1>
+
+                <p>
+                    Manage courses, teachers and subjects.
+                </p>
+
+            </div>
+
+            <button class="add"
+                    type="button"
+                    onclick="openAdd()">
+
+                + Add Course
+
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             COURSE TABLE
+             ========================= -->
+
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Course Name
+                        </th>
+
+                        <th>
+                            Course Code
+                        </th>
+
+                        <th>
+                            Teacher
+                        </th>
+
+                        <th>
+                            Teacher ID
+                        </th>
+
+                        <th>
+                            Subjects
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="body">
+
+                    <tr>
+
+                        <td colspan="6"
+                            style="text-align:center;padding:30px;color:#6b7280;">
+
+                            Loading courses...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         COURSE MODAL
+         ========================= -->
+
+    <div class="modal"
+         id="modal">
+
+        <div class="box">
+
+            <div class="head">
+
+                <h2 id="title">
+                    Add Course
+                </h2>
+
+                <button class="close"
+                        type="button"
+                        onclick="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form id="form">
+
+                <input type="hidden"
+                       id="id" />
+
+
+                <!-- COURSE NAME -->
+
+                <div class="group">
+
+                    <label for="courseName">
+                        Course Name
+                    </label>
+
+                    <input type="text"
+                           id="courseName"
+                           required />
+
+                </div>
+
+
+                <!-- COURSE CODE -->
+
+                <div class="group">
+
+                    <label for="courseCode">
+                        Course Code
+                    </label>
+
+                    <input type="text"
+                           id="courseCode"
+                           required />
+
+                </div>
+
+
+                <!-- TEACHER -->
+
+                <div class="group">
+
+                    <label for="teacherId">
+                        Teacher
+                    </label>
+
+                    <select id="teacherId"
+                            required>
+
+                        <option value="">
+                            Loading teachers...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =========================
+                     SUBJECT MANAGEMENT
+                     ========================= -->
+
+                <div class="subject-section"
+                     id="subjectSection">
+
+                    <h3>
+                        Subjects
+                    </h3>
+
+
+                    <div class="subject-add-row">
+
+                        <input type="text"
+                               id="subjectName"
+                               placeholder="Enter subject name" />
+
+                        <button type="button"
+                                class="subject-button"
+                                id="addSubjectButton"
+                                onclick="addSubject()">
+
+                            + Add Subject
+
+                        </button>
+
+                    </div>
+
+
+                    <p class="note">
+                        Add subjects after the course has been created.
+                    </p>
+
+
+                    <div id="subjectItems"
+                         class="subject-items">
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="actions">
+
+                    <button type="button"
+                            class="cancel"
+                            onclick="closeModal()">
+
+                        Cancel
+
+                    </button>
+
+                    <button type="submit"
+                            class="save"
+                            id="saveCourseButton">
+
+                        Save Course
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+            // ==================================================
+            // AUTHENTICATION
+            // ==================================================
+
+            const token =
+                localStorage.getItem("jwtToken");
+
+            const user =
+                JSON.parse(
+                    localStorage.getItem(
+                        "loggedInUser"
+                    ) || "null"
+                );
+
+
+            if (
+                !token ||
+                !user ||
+                String(user.role).toUpperCase() !== "ADMIN"
+            ) {
+
+                location.href = "/";
+
+            }
+
+
+            // ==================================================
+            // GLOBAL DATA
+            // ==================================================
+
+            let teachers = [];
+
+            let courses = [];
+
+            let editingCourseId = null;
+
+
+            // ==================================================
+            // MESSAGE
+            // ==================================================
+
+            function show(text, type) {
+
+                const message =
+                    document.getElementById(
+                        "message"
+                    );
+
+
+                message.textContent =
+                    text;
+
+
+                message.className =
+                    `message ${type}`;
+
+
+                message.style.display =
+                    "block";
+
+
+                setTimeout(
+                    function() {
+
+                        message.style.display =
+                            "none";
+
+                        message.className =
+                            "message";
+
+                    },
+                    3500
+                );
+            }
+
+
+            // ==================================================
+            // LOAD TEACHERS
+            // ==================================================
+
+            async function loadTeachers() {
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/teachers",
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load teachers."
+                        );
+
+                    }
+
+
+                    teachers =
+                        await response.json();
+
+
+                    const dropdown =
+                        document.getElementById(
+                            "teacherId"
+                        );
+
+
+                    dropdown.innerHTML = `
+                                <option value="">
+                                    Select Teacher
+                                </option>
+                            `;
+
+
+                    teachers.forEach(
+                        function(teacher) {
+
+                            dropdown.appendChild(
+                                new Option(
+                                    `${teacher.teacherId} - ${teacher.name}`,
+                                    teacher.id
+                                )
+                            );
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Teacher loading error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to load teachers.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // LOAD COURSES
+            // ==================================================
+
+            async function loadCourses() {
+
+                const body =
+                    document.getElementById(
+                        "body"
+                    );
+
+
+                body.innerHTML = `
+                            <tr>
+                                <td colspan="6"
+                                    style="text-align:center;padding:30px;color:#6b7280;">
+                                    Loading courses...
+                                </td>
+                            </tr>
+                        `;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/courses",
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load courses."
+                        );
+
+                    }
+
+
+                    courses =
+                        await response.json();
+
+
+                    body.innerHTML = "";
+
+
+                    if (
+                        !Array.isArray(courses) ||
+                        courses.length === 0
+                    ) {
+
+                        body.innerHTML = `
+                                    <tr>
+                                        <td colspan="6"
+                                            style="text-align:center;padding:30px;color:#6b7280;">
+
+                                            No courses found.
+
+                                        </td>
+                                    </tr>
+                                `;
+
+                        return;
+
+                    }
+
+
+                    courses.forEach(
+                        function(course) {
+
+                            const subjects =
+                                Array.isArray(
+                                    course.subjects
+                                )
+                                    ? course.subjects
+                                    : [];
+
+
+                            let subjectHtml =
+                                "";
+
+
+                            if (
+                                subjects.length === 0
+                            ) {
+
+                                subjectHtml = `
+                                            <span class="no-subject">
+                                                No subjects
+                                            </span>
+                                        `;
+
+                            }
+                            else {
+
+                                subjectHtml =
+                                    `<div class="subject-list">`;
+
+                                subjects.forEach(
+                                    function(subject) {
+
+                                        subjectHtml += `
+                                                    <div class="subject-row">
+
+                                                        <span class="subject-name">
+                                                            ${escapeHtml(
+                                            subject.subjectName
+                                        )}
+                                                        </span>
+
+                                                        <button
+                                                            type="button"
+                                                            class="delete-subject"
+                                                            onclick="deleteSubject(${subject.id})">
+
+                                                            ×
+
+                                                        </button>
+
+                                                    </div>
+                                                `;
+
+                                    }
+                                );
+
+                                subjectHtml +=
+                                    `</div>`;
+                            }
+
+
+                            const teacherIdText =
+                                course.teacherId
+                                    ? getTeacherDisplayName(
+                                        course.teacherId
+                                    )
+                                    : "Not Assigned";
+
+
+                            body.innerHTML += `
+
+                                        <tr>
+
+                                            <td>
+                                                ${escapeHtml(
+                                course.courseName || ""
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                course.courseCode || ""
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                course.teacherName ||
+                                "Not Assigned"
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${escapeHtml(
+                                teacherIdText
+                            )}
+                                            </td>
+
+                                            <td>
+                                                ${subjectHtml}
+                                            </td>
+
+                                            <td>
+
+                                                <button
+                                                    class="edit"
+                                                    type="button"
+                                                    onclick="editCourse(${course.id})">
+
+                                                    Edit / Assign Teacher
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+                                    `;
+
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Course loading error:",
+                        error
+                    );
+
+
+                    body.innerHTML = `
+                                <tr>
+                                    <td colspan="6"
+                                        style="text-align:center;padding:30px;color:#b91c1c;">
+
+                                        Unable to load courses.
+
+                                    </td>
+                                </tr>
+                            `;
+
+
+                    show(
+                        error.message ||
+                        "Unable to load courses.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // GET TEACHER ID DISPLAY
+            // ==================================================
+
+            function getTeacherDisplayName(
+                teacherId
+            ) {
+
+                const teacher =
+                    teachers.find(
+                        t =>
+                            Number(t.id) ===
+                            Number(teacherId)
+                    );
+
+
+                if (!teacher) {
+
+                    return "Not Assigned";
+
+                }
+
+
+                return teacher.teacherId ||
+                    teacher.id;
+
+            }
+
+
+            // ==================================================
+            // OPEN ADD
+            // ==================================================
+
+            async function openAdd() {
+
+                editingCourseId =
+                    null;
+
+
+                document
+                    .getElementById("form")
+                    .reset();
+
+
+                document
+                    .getElementById("id")
+                    .value =
+                    "";
+
+
+                document
+                    .getElementById("title")
+                    .textContent =
+                    "Add Course";
+
+
+                document
+                    .getElementById("subjectItems")
+                    .innerHTML = `
+                                <div class="note">
+                                    Create the course first.
+                                    Then add subjects.
+                                </div>
+                            `;
+
+
+                document
+                    .getElementById("subjectName")
+                    .value =
+                    "";
+
+
+                document
+                    .getElementById("subjectName")
+                    .disabled =
+                    true;
+
+
+                document
+                    .getElementById("addSubjectButton")
+                    .disabled =
+                    true;
+
+
+                await loadTeachers();
+
+
+                document
+                    .getElementById("modal")
+                    .style.display =
+                    "flex";
+
+            }
+
+
+            // ==================================================
+            // CLOSE MODAL
+            // ==================================================
+
+            function closeModal() {
+
+                document
+                    .getElementById("modal")
+                    .style.display =
+                    "none";
+
+
+                editingCourseId =
+                    null;
+
+            }
+
+
+            // ==================================================
+            // EDIT COURSE
+            // ==================================================
+
+            async function editCourse(id) {
+
+                try {
+
+                    await loadTeachers();
+
+
+                    const course =
+                        courses.find(
+                            x =>
+                                Number(x.id) ===
+                                Number(id)
+                        );
+
+
+                    if (!course) {
+
+                        show(
+                            "Course not found.",
+                            "error"
+                        );
+
+                        return;
+
+                    }
+
+
+                    editingCourseId =
+                        Number(id);
+
+
+                    document
+                        .getElementById("id")
+                        .value =
+                        course.id;
+
+
+                    document
+                        .getElementById("courseName")
+                        .value =
+                        course.courseName || "";
+
+
+                    document
+                        .getElementById("courseCode")
+                        .value =
+                        course.courseCode || "";
+
+
+                    document
+                        .getElementById("teacherId")
+                        .value =
+                        course.teacherId || "";
+
+
+                    document
+                        .getElementById("title")
+                        .textContent =
+                        "Update Course";
+
+
+                    document
+                        .getElementById("subjectName")
+                        .disabled =
+                        false;
+
+
+                    document
+                        .getElementById("addSubjectButton")
+                        .disabled =
+                        false;
+
+
+                    renderSubjects(
+                        Array.isArray(course.subjects)
+                            ? course.subjects
+                            : []
+                    );
+
+
+                    document
+                        .getElementById("modal")
+                        .style.display =
+                        "flex";
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Edit course error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to load course.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // ADD / UPDATE COURSE
+            // ==================================================
+
+            document
+                .getElementById("form")
+                .addEventListener(
+                    "submit",
+                    async function(event) {
+
+                        event.preventDefault();
+
+
+                        const id =
+                            document
+                                .getElementById("id")
+                                .value
+                                .trim();
+
+
+                        const courseName =
+                            document
+                                .getElementById("courseName")
+                                .value
+                                .trim();
+
+
+                        const courseCode =
+                            document
+                                .getElementById("courseCode")
+                                .value
+                                .trim();
+
+
+                        const teacherId =
+                            Number(
+                                document
+                                    .getElementById("teacherId")
+                                    .value
+                            );
+
+
+                        if (!courseName) {
+
+                            show(
+                                "Please enter course name.",
+                                "error"
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!courseCode) {
+
+                            show(
+                                "Please enter course code.",
+                                "error"
+                            );
+
+                            return;
+
+                        }
+
+
+                        if (!teacherId) {
+
+                            show(
+                                "Please select a teacher.",
+                                "error"
+                            );
+
+                            return;
+
+                        }
+
+
+                        const data = {
+
+                            courseName:
+                                courseName,
+
+                            courseCode:
+                                courseCode,
+
+                            teacherId:
+                                teacherId
+
+                        };
+
+
+                        const button =
+                            document
+                                .getElementById(
+                                    "saveCourseButton"
+                                );
+
+
+                        button.disabled =
+                            true;
+
+
+                        button.textContent =
+                            id
+                                ? "Updating..."
+                                : "Saving...";
+
+
+                        try {
+
+                            const response =
+                                await fetch(
+                                    id
+                                        ? `/api/courses/${id}`
+                                        : "/api/courses",
+                                    {
+
+                                        method:
+                                            id
+                                                ? "PUT"
+                                                : "POST",
+
+                                        headers: {
+
+                                            Authorization:
+                                                `Bearer ${token}`,
+
+                                            "Content-Type":
+                                                "application/json"
+
+                                        },
+
+                                        body:
+                                            JSON.stringify(
+                                                data
+                                            )
+
+                                    }
+                                );
+
+
+                            if (!response.ok) {
+
+                                let message =
+                                    "Course operation failed.";
+
+                                try {
+
+                                    const result =
+                                        await response.json();
+
+                                    message =
+                                        result.message ||
+                                        result.title ||
+                                        message;
+
+                                }
+                                catch { }
+
+
+                                throw new Error(
+                                    message
+                                );
+
+                            }
+
+
+                            const savedCourse =
+                                await response.json();
+
+
+                            if (savedCourse) {
+
+                                editingCourseId =
+                                    Number(
+                                        savedCourse.id
+                                    );
+
+                            }
+
+
+                            show(
+                                id
+                                    ? "Course updated successfully."
+                                    : "Course added successfully.",
+                                "success"
+                            );
+
+
+                            await loadCourses();
+
+
+                            if (!id) {
+
+                                // After creating the course,
+                                // keep modal open so subjects
+                                // can immediately be added.
+
+                                document
+                                    .getElementById("id")
+                                    .value =
+                                    editingCourseId;
+
+
+                                document
+                                    .getElementById("title")
+                                    .textContent =
+                                    "Update Course";
+
+
+                                document
+                                    .getElementById("subjectName")
+                                    .disabled =
+                                    false;
+
+
+                                document
+                                    .getElementById("addSubjectButton")
+                                    .disabled =
+                                    false;
+
+
+                                document
+                                    .getElementById("subjectItems")
+                                    .innerHTML =
+                                    `
+                                                <div class="loading">
+                                                    Loading subjects...
+                                                </div>
+                                            `;
+
+
+                                await refreshCurrentCourseSubjects();
+
+                            }
+
+                        }
+                        catch (error) {
+
+                            console.error(
+                                "Course save error:",
+                                error
+                            );
+
+
+                            show(
+                                error.message ||
+                                "Unable to save course.",
+                                "error"
+                            );
+
+                        }
+                        finally {
+
+                            button.disabled =
+                                false;
+
+
+                            button.textContent =
+                                "Save Course";
+
+                        }
+
+                    }
+                );
+
+
+            // ==================================================
+            // REFRESH CURRENT COURSE SUBJECTS
+            // ==================================================
+
+            async function refreshCurrentCourseSubjects() {
+
+                if (!editingCourseId) {
+                    return;
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/courses",
+                            {
+                                headers: {
+                                    Authorization:
+                                        `Bearer ${token}`
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Unable to refresh course."
+                        );
+                    }
+
+
+                    courses =
+                        await response.json();
+
+
+                    const course =
+                        courses.find(
+                            c =>
+                                Number(c.id) ===
+                                Number(editingCourseId)
+                        );
+
+
+                    if (!course) {
+                        return;
+                    }
+
+
+                    renderSubjects(
+                        Array.isArray(course.subjects)
+                            ? course.subjects
+                            : []
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        error
+                    );
+
+                    show(
+                        "Unable to load subjects.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // ADD SUBJECT
+            // POST /api/subjects
+            // ==================================================
+
+            async function addSubject() {
+
+                if (!editingCourseId) {
+
+                    show(
+                        "Save the course first.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                const input =
+                    document.getElementById(
+                        "subjectName"
+                    );
+
+
+                const subjectName =
+                    input.value.trim();
+
+
+                if (!subjectName) {
+
+                    show(
+                        "Please enter subject name.",
+                        "error"
+                    );
+
+                    input.focus();
+
+                    return;
+
+                }
+
+
+                const button =
+                    document.getElementById(
+                        "addSubjectButton"
+                    );
+
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    "Adding...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/subjects",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        {
+                                            courseId:
+                                                Number(
+                                                    editingCourseId
+                                                ),
+
+                                            subjectName:
+                                                subjectName
+                                        }
+                                    )
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        let message =
+                            "Unable to add subject.";
+
+                        try {
+
+                            const data =
+                                await response.json();
+
+                            message =
+                                data.message ||
+                                data.title ||
+                                message;
+
+                        }
+                        catch { }
+
+
+                        throw new Error(
+                            message
+                        );
+
+                    }
+
+
+                    input.value =
+                        "";
+
+
+                    show(
+                        "Subject added successfully.",
+                        "success"
+                    );
+
+
+                    await loadCourses();
+
+
+                    await refreshCurrentCourseSubjects();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Subject add error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to add subject.",
+                        "error"
+                    );
+
+                }
+                finally {
+
+                    button.disabled =
+                        false;
+
+                    button.textContent =
+                        "+ Add Subject";
+
+                }
+
+            }
+
+
+            // ==================================================
+            // RENDER SUBJECTS IN MODAL
+            // ==================================================
+
+            function renderSubjects(
+                subjects
+            ) {
+
+                const container =
+                    document.getElementById(
+                        "subjectItems"
+                    );
+
+
+                container.innerHTML =
+                    "";
+
+
+                if (
+                    !Array.isArray(subjects) ||
+                    subjects.length === 0
+                ) {
+
+                    container.innerHTML = `
+                                <div class="note">
+                                    No subjects added yet.
+                                </div>
+                            `;
+
+                    return;
+                }
+
+
+                subjects.forEach(
+                    function(subject) {
+
+                        container.innerHTML += `
+                                    <div class="subject-item">
+
+                                        <span class="subject-item-name">
+                                            ${escapeHtml(
+                            subject.subjectName
+                        )}
+                                        </span>
+
+                                        <div class="subject-item-actions">
+
+                                            <button
+                                                type="button"
+                                                class="small-edit"
+                                                onclick="editSubject(
+                                                    ${subject.id},
+                                                    '${escapeJs(
+                            subject.subjectName
+                        )}'
+                                                )">
+
+                                                Edit
+
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="small-delete"
+                                                onclick="deleteSubject(
+                                                    ${subject.id}
+                                                )">
+
+                                                Delete
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                `;
+
+                    }
+                );
+
+            }
+
+
+            // ==================================================
+            // EDIT SUBJECT
+            // PUT /api/subjects/{id}
+            // ==================================================
+
+            async function editSubject(
+                id,
+                currentName
+            ) {
+
+                const newName =
+                    prompt(
+                        "Enter new subject name:",
+                        currentName
+                    );
+
+
+                if (
+                    newName === null
+                ) {
+
+                    return;
+
+                }
+
+
+                const subjectName =
+                    newName.trim();
+
+
+                if (!subjectName) {
+
+                    show(
+                        "Subject name cannot be empty.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/subjects/${id}`,
+                            {
+
+                                method: "PUT",
+
+                                headers: {
+
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        {
+                                            courseId:
+                                                Number(
+                                                    editingCourseId
+                                                ),
+
+                                            subjectName:
+                                                subjectName
+                                        }
+                                    )
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        let message =
+                            "Unable to update subject.";
+
+                        try {
+
+                            const data =
+                                await response.json();
+
+                            message =
+                                data.message ||
+                                data.title ||
+                                message;
+
+                        }
+                        catch { }
+
+
+                        throw new Error(
+                            message
+                        );
+
+                    }
+
+
+                    show(
+                        "Subject updated successfully.",
+                        "success"
+                    );
+
+
+                    await loadCourses();
+
+
+                    await refreshCurrentCourseSubjects();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Subject update error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to update subject.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // DELETE SUBJECT
+            // DELETE /api/subjects/{id}
+            // ==================================================
+
+            async function deleteSubject(
+                id
+            ) {
+
+                const confirmed =
+                    confirm(
+                        "Are you sure you want to delete this subject?"
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/api/subjects/${id}`,
+                            {
+
+                                method: "DELETE",
+
+                                headers: {
+
+                                    Authorization:
+                                        `Bearer ${token}`,
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                }
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        let message =
+                            "Unable to delete subject.";
+
+                        try {
+
+                            const data =
+                                await response.json();
+
+                            message =
+                                data.message ||
+                                data.title ||
+                                message;
+
+                        }
+                        catch { }
+
+
+                        throw new Error(
+                            message
+                        );
+
+                    }
+
+
+                    show(
+                        "Subject deleted successfully.",
+                        "success"
+                    );
+
+
+                    await loadCourses();
+
+
+                    if (editingCourseId) {
+
+                        await refreshCurrentCourseSubjects();
+
+                    }
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Subject delete error:",
+                        error
+                    );
+
+
+                    show(
+                        error.message ||
+                        "Unable to delete subject.",
+                        "error"
+                    );
+
+                }
+
+            }
+
+
+            // ==================================================
+            // ESCAPE HTML
+            // ==================================================
+
+            function escapeHtml(value) {
+
+                return String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+
+            }
+
+
+            function escapeJs(value) {
+
+                return String(value)
+                    .replace(/\\/g, "\\\\")
+                    .replace(/'/g, "\\'")
+                    .replace(/\r/g, "")
+                    .replace(/\n/g, "\\n");
+
+            }
+
+
+            // ==================================================
+            // INITIALIZE
+            // ==================================================
+
+            async function initializePage() {
+
+                await loadTeachers();
+
+                await loadCourses();
+
+            }
+
+
+            initializePage();
+
+    </script>
+
+</body>
+</html>

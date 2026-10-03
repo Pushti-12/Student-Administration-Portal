@@ -1,0 +1,987 @@
+﻿@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div id="pageError"
+     class="error"
+     style="display:none;">
+</div>
+
+
+<div class="student-hero">
+
+    <span class="page-kicker"
+          style="color:rgba(255,255,255,.72);">
+
+        STUDENT PORTAL
+
+    </span>
+
+
+    <h1>
+        Welcome,
+        <span id="studentName">
+            Student
+        </span>
+        👋
+    </h1>
+
+
+    <p>
+        Here's your academic overview and latest updates.
+    </p>
+
+</div>
+
+
+<!-- =========================
+     STATISTICS
+     ========================= -->
+
+<section class="stats-grid">
+
+    <div class="stat-card">
+
+        <div class="stat-icon blue">
+            📚
+        </div>
+
+        <span class="stat-title">
+            My Course
+        </span>
+
+        <strong class="stat-value"
+                id="courseName">
+            —
+        </strong>
+
+        <span class="stat-subtitle"
+              id="courseCode">
+            Loading...
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon green">
+            ✓
+        </div>
+
+        <span class="stat-title">
+            Attendance
+        </span>
+
+        <strong class="stat-value"
+                id="attendancePercentage">
+            —
+        </strong>
+
+        <span class="stat-subtitle">
+            Overall attendance
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon purple">
+            📝
+        </div>
+
+        <span class="stat-title">
+            Exams / Marks
+        </span>
+
+        <strong class="stat-value"
+                id="marksCount">
+            —
+        </strong>
+
+        <span class="stat-subtitle"
+              id="averageMarks">
+            Average: —
+        </span>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon orange">
+            💳
+        </div>
+
+        <span class="stat-title">
+            Fee Status
+        </span>
+
+        <strong class="stat-value"
+                id="feeStatus">
+            —
+        </strong>
+
+        <span class="stat-subtitle"
+              id="feeAmount">
+            —
+        </span>
+
+    </div>
+
+</section>
+
+
+
+<div class="content-grid">
+
+
+    <!-- COURSE -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    My Course
+                </h2>
+
+                <p>
+                    Your currently assigned course
+                </p>
+
+            </div>
+
+            <a href="/Student/Courses"
+               class="view-link">
+
+                View Details →
+
+            </a>
+
+        </div>
+
+
+        <div id="courseCard"
+             class="course-card">
+
+            <div class="loading">
+                Loading course...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ATTENDANCE -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    Attendance
+                </h2>
+
+                <p>
+                    Your attendance summary
+                </p>
+
+            </div>
+
+            <a href="/Student/Attendance"
+               class="view-link">
+
+                View All →
+
+            </a>
+
+        </div>
+
+
+        <div id="attendanceSummary">
+
+            <div class="loading">
+                Loading attendance...
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<!-- =========================
+     RECENT MARKS
+     ========================= -->
+
+<section class="card"
+         style="margin-bottom:20px;">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Recent Results
+            </h2>
+
+            <p>
+                Latest examination performance
+            </p>
+
+        </div>
+
+        <a href="/Student/Marks"
+           class="view-link">
+
+            View Results →
+
+        </a>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Exam
+                    </th>
+
+                    <th>
+                        Course
+                    </th>
+
+                    <th>
+                        Subject
+                    </th>
+
+                    <th>
+                        Marks
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="recentMarks">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================
+     QUICK LINKS
+     ========================= -->
+
+<section class="card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h2>
+                Quick Access
+            </h2>
+
+            <p>
+                Access your academic information quickly
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-grid">
+
+
+        <a href="/Student/Profile"
+           class="quick-link">
+
+            <div class="quick-icon">
+                👤
+            </div>
+
+            <div>
+
+                <strong>
+                    My Profile
+                </strong>
+
+                <span>
+                    Personal details
+                </span>
+
+            </div>
+
+        </a>
+
+
+
+        <a href="/Student/Attendance"
+           class="quick-link">
+
+            <div class="quick-icon">
+                ✅
+            </div>
+
+            <div>
+
+                <strong>
+                    Attendance
+                </strong>
+
+                <span>
+                    View attendance
+                </span>
+
+            </div>
+
+        </a>
+
+
+
+        <a href="/Student/Fees"
+           class="quick-link">
+
+            <div class="quick-icon">
+                💳
+            </div>
+
+            <div>
+
+                <strong>
+                    Fees
+                </strong>
+
+                <span>
+                    Payment status
+                </span>
+
+            </div>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+
+<script>
+
+    // ==================================================
+    // AUTHENTICATION
+    // ==================================================
+
+    const token =
+        localStorage.getItem(
+            "jwtToken"
+        );
+
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "loggedInUser"
+            ) || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !==
+        "STUDENT"
+    ) {
+
+        location.href = "/";
+
+    }
+
+
+    // ==================================================
+    // DATA
+    // ==================================================
+
+    let student = null;
+
+    let courses = [];
+
+    let attendance = [];
+
+    let marks = [];
+
+    let fees = [];
+
+
+    // ==================================================
+    // API HELPER
+    // ==================================================
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Request failed: ${response.status}`
+            );
+
+        }
+
+
+        return await response.json();
+
+    }
+
+
+    // ==================================================
+    // INITIALIZE
+    // ==================================================
+
+    async function initialize() {
+
+        try {
+
+            student =
+                await getJson(
+                    "/api/students/me"
+                );
+
+
+            localStorage.setItem(
+                "studentId",
+                student.id
+            );
+
+
+            courses =
+                await getJson(
+                    "/api/courses"
+                );
+
+
+            attendance =
+                await getJson(
+                    `/api/attendance/student/${student.id}`
+                );
+
+
+            marks =
+                await getJson(
+                    `/api/marks/student/${student.id}`
+                );
+
+
+            fees =
+                await getJson(
+                    `/api/fees/student/${student.id}`
+                );
+
+
+            renderDashboard();
+
+        }
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            document.getElementById(
+                "pageError"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "pageError"
+            ).textContent =
+                "Unable to load dashboard data.";
+
+        }
+
+    }
+
+
+    // ==================================================
+    // DASHBOARD
+    // ==================================================
+
+    function renderDashboard() {
+
+        const studentName =
+            document.getElementById(
+                "studentName"
+            );
+
+
+        studentName.textContent =
+            student.name;
+
+
+        const course =
+            courses.find(
+                c =>
+                    Number(c.id) ===
+                    Number(student.courseId)
+            );
+
+
+        document.getElementById(
+            "courseName"
+        ).textContent =
+            course
+                ? course.courseName
+                : "—";
+
+
+        document.getElementById(
+            "courseCode"
+        ).textContent =
+            course
+                ? course.courseCode
+                : "Course not found";
+
+
+        renderCourse(course);
+
+        renderAttendance();
+
+        renderMarks();
+
+        renderFees();
+
+    }
+
+
+    // ==================================================
+    // COURSE
+    // ==================================================
+
+    function renderCourse(course) {
+
+        const card =
+            document.getElementById(
+                "courseCard"
+            );
+
+
+        if (!course) {
+
+            card.innerHTML =
+                `
+                    <div class="empty">
+                        Course information not available.
+                    </div>
+                    `;
+
+            return;
+
+        }
+
+
+        card.innerHTML =
+            `
+                <span class="course-code">
+                    ${escapeHtml(
+                course.courseCode
+            )}
+                </span>
+
+                <h3>
+                    ${escapeHtml(
+                course.courseName
+            )}
+                </h3>
+
+                <p>
+                    Teacher:
+
+                    <strong>
+                        ${escapeHtml(
+                course.teacherName ||
+                "Not assigned"
+            )}
+                    </strong>
+                </p>
+                `;
+
+    }
+
+
+    // ==================================================
+    // ATTENDANCE
+    // ==================================================
+
+    function renderAttendance() {
+
+        const box =
+            document.getElementById(
+                "attendanceSummary"
+            );
+
+
+        const total =
+            attendance.length;
+
+
+        const present =
+            attendance.filter(
+                a =>
+                    String(a.status)
+                        .toUpperCase() ===
+                    "PRESENT"
+            ).length;
+
+
+        const percentage =
+            total > 0
+                ? Math.round(
+                    present * 100 / total
+                )
+                : 0;
+
+
+        document.getElementById(
+            "attendancePercentage"
+        ).textContent =
+            `${percentage}%`;
+
+
+        box.innerHTML =
+            `
+                <div class="summary-box">
+
+                    <span>
+                        Attendance Rate
+                    </span>
+
+                    <strong>
+                        ${percentage}%
+                    </strong>
+
+                </div>
+
+                <div style="margin-top:14px;">
+
+                    <span style="color:#94a3b8;font-size:11px;">
+
+                        Present ${present}
+                        out of ${total} classes
+
+                    </span>
+
+
+                    <div style="
+                        margin-top:8px;
+                        height:8px;
+                        background:#edf1f6;
+                        border-radius:10px;
+                        overflow:hidden;
+                    ">
+
+                        <div style="
+                            width:${percentage}%;
+                            height:100%;
+                            background:#22c55e;
+                            border-radius:10px;
+                        "></div>
+
+                    </div>
+
+                </div>
+                `;
+
+    }
+
+
+    // ==================================================
+    // MARKS
+    // ==================================================
+
+    function renderMarks() {
+
+        const average =
+            marks.length > 0
+                ? Math.round(
+                    marks.reduce(
+                        (sum, m) =>
+                            sum +
+                            Number(
+                                m.marksObtained
+                            ),
+                        0
+                    ) /
+                    marks.length
+                )
+                : 0;
+
+
+        document.getElementById(
+            "marksCount"
+        ).textContent =
+            marks.length;
+
+
+        document.getElementById(
+            "averageMarks"
+        ).textContent =
+            `Average: ${average}`;
+
+
+        const body =
+            document.getElementById(
+                "recentMarks"
+            );
+
+
+        const recent =
+            [...marks]
+                .reverse()
+                .slice(0, 5);
+
+
+        if (!recent.length) {
+
+            body.innerHTML =
+                `
+                    <tr>
+
+                        <td colspan="4"
+                            class="empty">
+
+                            No marks available.
+
+                        </td>
+
+                    </tr>
+                    `;
+
+            return;
+
+        }
+
+
+        body.innerHTML =
+            recent
+                .map(
+                    m => {
+
+                        return `
+                            <tr>
+
+                                <td>
+                                    ${escapeHtml(
+                            m.examName ||
+                            "—"
+                        )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                            m.courseName ||
+                            getCourseName(
+                                m.courseId
+                            )
+                        )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                            m.subjectName ||
+                            "—"
+                        )}
+                                </td>
+
+                                <td>
+
+                                    <strong>
+                                        ${m.marksObtained ?? "—"}
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+                            `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    // ==================================================
+    // COURSE NAME FALLBACK
+    // ==================================================
+
+    function getCourseName(courseId) {
+
+        const course =
+            courses.find(
+                c =>
+                    Number(c.id) ===
+                    Number(courseId)
+            );
+
+
+        return course
+            ? course.courseName
+            : "N/A";
+
+    }
+
+
+    // ==================================================
+    // FEES
+    // ==================================================
+
+    function renderFees() {
+
+        const paid =
+            fees
+                .filter(
+                    f =>
+                        String(f.status)
+                            .toUpperCase() ===
+                        "PAID"
+                )
+                .reduce(
+                    (sum, f) =>
+                        sum +
+                        Number(f.amount),
+                    0
+                );
+
+
+        const pending =
+            fees
+                .filter(
+                    f =>
+                        String(f.status)
+                            .toUpperCase() !==
+                        "PAID"
+                )
+                .reduce(
+                    (sum, f) =>
+                        sum +
+                        Number(f.amount),
+                    0
+                );
+
+
+        let status =
+            "No Records";
+
+
+        if (
+            paid > 0 &&
+            pending === 0
+        ) {
+
+            status =
+                "Paid";
+
+        }
+        else if (
+            pending > 0
+        ) {
+
+            status =
+                "Pending";
+
+        }
+
+
+        document.getElementById(
+            "feeStatus"
+        ).textContent =
+            status;
+
+
+        document.getElementById(
+            "feeAmount"
+        ).textContent =
+            `Paid: ₹${paid.toFixed(2)}`;
+
+    }
+
+
+    // ==================================================
+    // ESCAPE HTML
+    // ==================================================
+
+    function escapeHtml(value) {
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    // ==================================================
+    // START
+    // ==================================================
+
+    initialize();
+
+</script>

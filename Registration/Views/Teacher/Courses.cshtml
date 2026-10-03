@@ -1,0 +1,522 @@
+﻿@{
+    ViewData["Title"] = "My Courses";
+}
+
+<div class="teacher-courses-page">
+
+    <!-- =========================
+         PAGE HEADER
+         ========================= -->
+
+    <div class="teacher-page-header">
+
+        <div>
+            <h1>My Courses</h1>
+
+            <p>
+                Courses assigned to you.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ERROR MESSAGE
+         ========================= -->
+
+    <div id="pageError"
+         class="page-error"
+         style="display:none;">
+    </div>
+
+
+    <!-- =========================
+         COURSES GRID
+         ========================= -->
+
+    <section id="courseGrid"
+             class="course-grid">
+
+        <div class="loading">
+            Loading courses...
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+    /* =========================
+       PAGE
+       ========================= */
+
+    .teacher-courses-page {
+        width: 100%;
+    }
+
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    .teacher-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 28px;
+    }
+
+
+    .teacher-page-header h1 {
+        margin: 0;
+
+        color: #172b4d;
+
+        font-size: 30px;
+
+        font-weight: 700;
+    }
+
+
+    .teacher-page-header p {
+        margin: 7px 0 0;
+
+        color: #718096;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       GRID
+       ========================= */
+
+    .course-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 20px;
+    }
+
+
+    /* =========================
+       COURSE CARD
+       ========================= */
+
+    .course-card {
+        background: #ffffff;
+
+        border:
+            1px solid #e3e8ef;
+
+        border-radius: 12px;
+
+        padding: 23px;
+
+        box-shadow:
+            0 3px 12px
+            rgba(15,23,42,.05);
+
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    .course-card:hover {
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(15,23,42,.08);
+    }
+
+
+    .course-code {
+        display: inline-block;
+
+        padding: 6px 10px;
+
+        background: #ede9fe;
+
+        color: #7c3aed;
+
+        border-radius: 20px;
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+
+    .course-card h2 {
+        margin: 15px 0 10px;
+
+        color: #172033;
+
+        font-size: 19px;
+
+        font-weight: 700;
+    }
+
+
+    .course-info {
+        margin-top: 8px;
+
+        font-size: 12px;
+
+        color: #718096;
+    }
+
+
+    .course-info strong {
+        color: #334155;
+    }
+
+
+    .students-count {
+        margin-top: 13px;
+
+        padding-top: 13px;
+
+        border-top:
+            1px solid #edf0f4;
+
+        font-size: 12px;
+
+        color: #64748b;
+    }
+
+
+    .students-count strong {
+        color: #2563eb;
+    }
+
+
+    /* =========================
+       LOADING / EMPTY
+       ========================= */
+
+    .loading,
+    .empty {
+        grid-column: 1 / -1;
+
+        min-height: 180px;
+
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        text-align: center;
+
+        color: #94a3b8;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================
+       ERROR
+       ========================= */
+
+    .page-error {
+        background: #fef2f2;
+
+        border:
+            1px solid #fecaca;
+
+        color: #b91c1c;
+
+        border-radius: 8px;
+
+        padding: 12px 15px;
+
+        margin-bottom: 20px;
+
+        font-size: 13px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @@media (max-width: 1000px) {
+
+        .course-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .teacher-page-header h1 {
+            font-size: 25px;
+        }
+
+        .course-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+    }
+
+</style>
+
+
+<script>
+
+    /* =========================
+       AUTH
+       ========================= */
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+    const user =
+        JSON.parse(
+            localStorage.getItem("loggedInUser") || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        String(user.role).toUpperCase() !== "TEACHER"
+    ) {
+        window.location.href = "/Auth/Login";
+    }
+
+
+    /* =========================
+       API HELPER
+       ========================= */
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            let message =
+                `Request failed: ${response.status}`;
+
+            try {
+
+                const data =
+                    await response.json();
+
+                message =
+                    data.message ||
+                    data.title ||
+                    message;
+
+            }
+            catch { }
+
+            throw new Error(message);
+        }
+
+
+        return await response.json();
+
+    }
+
+
+    /* =========================
+       LOAD MY COURSES
+       ========================= */
+
+    async function loadMyCourses() {
+
+        try {
+
+            /*
+             * IMPORTANT:
+             * Do NOT take teacherId from localStorage.
+             * Get the actual logged-in teacher from DB.
+             */
+
+            const teacher =
+                await getJson(
+                    "/api/teachers/me"
+                );
+
+
+            /*
+             * Get courses
+             */
+
+            const allCourses =
+                await getJson(
+                    "/api/courses"
+                );
+
+
+            /*
+             * Only courses assigned
+             * to the logged-in teacher.
+             */
+
+            const myCourses =
+                allCourses.filter(
+                    course =>
+                        Number(course.teacherId) ===
+                        Number(teacher.id)
+                );
+
+
+            /*
+             * Get students to show
+             * enrolled count.
+             */
+
+            const allStudents =
+                await getJson(
+                    "/api/students"
+                );
+
+
+            const courseGrid =
+                document.getElementById(
+                    "courseGrid"
+                );
+
+
+            /*
+             * No courses
+             */
+
+            if (!myCourses.length) {
+
+                courseGrid.innerHTML = `
+                    <div class="empty">
+                        No courses are currently assigned to you.
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /*
+             * Render courses
+             */
+
+            courseGrid.innerHTML =
+                myCourses
+                    .map(function (course) {
+
+                        const studentCount =
+                            allStudents.filter(
+                                student =>
+                                    Number(
+                                        student.courseId
+                                    ) ===
+                                    Number(course.id)
+                            ).length;
+
+
+                        return `
+                            <div class="course-card">
+
+                                <span class="course-code">
+                                    ${course.courseCode}
+                                </span>
+
+
+                                <h2>
+                                    ${course.courseName}
+                                </h2>
+
+
+                                <div class="course-info">
+                                    Course ID:
+                                    <strong>
+                                        ${course.id}
+                                    </strong>
+                                </div>
+
+
+                                <div class="course-info">
+                                    Teacher:
+                                    <strong>
+                                        ${teacher.name}
+                                    </strong>
+                                </div>
+
+
+                                <div class="students-count">
+                                    Students enrolled:
+                                    <strong>
+                                        ${studentCount}
+                                    </strong>
+                                </div>
+
+                            </div>
+                        `;
+
+                    })
+                    .join("");
+
+        }
+        catch (error) {
+
+            console.error(
+                "My Courses error:",
+                error
+            );
+
+
+            const errorBox =
+                document.getElementById(
+                    "pageError"
+                );
+
+
+            errorBox.style.display =
+                "block";
+
+
+            errorBox.textContent =
+                error.message ||
+                "Unable to load your courses.";
+
+
+            document.getElementById(
+                "courseGrid"
+            ).innerHTML = "";
+
+        }
+
+    }
+
+
+    /* =========================
+       START
+       ========================= */
+
+    loadMyCourses();
+
+</script>

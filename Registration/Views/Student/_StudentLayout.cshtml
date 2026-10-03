@@ -1,0 +1,802 @@
+﻿@{
+    var currentPath =
+        Context.Request.Path.Value?.ToLower() ?? "";
+
+    var isStudentDashboard =
+        currentPath == "/student/dashboard" ||
+        currentPath == "/student/dashboard/";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Student Management System
+    </title>
+
+    <link rel="stylesheet"
+          href="~/css/student-dashboard.css" />
+
+</head>
+
+
+<body>
+
+    <div class="student-layout">
+
+
+        <!-- =========================
+             SIDEBAR
+             ========================= -->
+
+        <aside class="student-sidebar">
+
+
+            <div class="sidebar-brand">
+
+                <div class="brand-logo">
+                    🎓
+                </div>
+
+                <div>
+
+                    <h2>
+                        Student System
+                    </h2>
+
+                    <span>
+                        Student Portal
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <div class="nav-label">
+                    MAIN MENU
+                </div>
+
+
+                <a href="/Student/Dashboard"
+                   class="sidebar-link @(currentPath == "/student/dashboard" ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        ▣
+                    </span>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <div class="nav-label">
+                    MY ACADEMICS
+                </div>
+
+
+                <a href="/Student/Profile"
+                   class="sidebar-link @(currentPath.StartsWith("/student/profile") ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        👤
+                    </span>
+
+                    <span>
+                        My Profile
+                    </span>
+
+                </a>
+
+
+                <a href="/Student/Courses"
+                   class="sidebar-link @(currentPath.StartsWith("/student/courses") ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        📚
+                    </span>
+
+                    <span>
+                        My Courses
+                    </span>
+
+                </a>
+
+
+                <a href="/Student/Attendance"
+                   class="sidebar-link @(currentPath.StartsWith("/student/attendance") ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Attendance
+                    </span>
+
+                </a>
+
+
+                <a href="/Student/Marks"
+                   class="sidebar-link @(currentPath.StartsWith("/student/marks") ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        📝
+                    </span>
+
+                    <span>
+                        Marks & Results
+                    </span>
+
+                </a>
+
+
+                <a href="/Student/Fees"
+                   class="sidebar-link @(currentPath.StartsWith("/student/fees") ? "active" : "")">
+
+                    <span class="sidebar-icon">
+                        💳
+                    </span>
+
+                    <span>
+                        Fees
+                    </span>
+
+                </a>
+
+
+                <div class="nav-label account-label">
+                    ACCOUNT
+                </div>
+
+
+                <a href="#"
+                   id="logoutLink"
+                   class="sidebar-link">
+
+                    <span class="sidebar-icon">
+                        🚪
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+
+        <!-- =========================
+             MAIN
+             ========================= -->
+
+        <main class="student-main">
+
+
+            @if (isStudentDashboard)
+            {
+                <!-- =========================
+                     DASHBOARD TOPBAR
+                     ========================= -->
+
+                <header class="topbar">
+
+                    <div class="topbar-title">
+
+                        <span>
+                            Student Portal
+                        </span>
+
+                        <strong>
+                            Academic Management
+                        </strong>
+
+                    </div>
+
+
+                    <!-- =========================
+                         PROFILE
+                         DASHBOARD ONLY
+                         ========================= -->
+
+                    <div class="topbar-user-wrapper">
+
+                        <div class="topbar-user"
+                             id="profileToggle">
+
+                            <div class="topbar-avatar"
+                                 id="topbarAvatar">
+
+                                S
+
+                            </div>
+
+                            <div>
+
+                                <strong id="topbarName">
+                                    Student
+                                </strong>
+
+                                <span>
+                                    Student
+                                </span>
+
+                            </div>
+
+                            <span class="profile-arrow">
+                                ▾
+                            </span>
+
+                        </div>
+
+
+                        <div class="profile-dropdown"
+                             id="profileDropdown">
+
+                            <a href="/Student/Profile"
+                               class="profile-dropdown-item">
+
+                                <span>
+                                    👤
+                                </span>
+
+                                <span>
+                                    Profile
+                                </span>
+
+                            </a>
+
+
+                            <button type="button"
+                                    id="profileLogoutButton"
+                                    class="profile-dropdown-item">
+
+                                <span>
+                                    🚪
+                                </span>
+
+                                <span>
+                                    Logout
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </header>
+            }
+
+
+            <!-- =========================
+                 EXISTING PAGE CONTENT
+                 ========================= -->
+
+            <section class="page-content">
+
+                @RenderBody()
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <script>
+
+            // ==========================================
+            // STUDENT DATA
+            // ==========================================
+
+            let layoutUser = null;
+
+
+            try {
+
+                layoutUser =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "loggedInUser"
+                        ) || "null"
+                    );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Unable to read logged-in user:",
+                    error
+                );
+
+            }
+
+
+            // ==========================================
+            // PROFILE ELEMENTS
+            // ==========================================
+
+            const topbarName =
+                document.getElementById(
+                    "topbarName"
+                );
+
+
+            const topbarAvatar =
+                document.getElementById(
+                    "topbarAvatar"
+                );
+
+
+            const profileToggle =
+                document.getElementById(
+                    "profileToggle"
+                );
+
+
+            const profileDropdown =
+                document.getElementById(
+                    "profileDropdown"
+                );
+
+
+            const profileLogoutButton =
+                document.getElementById(
+                    "profileLogoutButton"
+                );
+
+
+            // ==========================================
+            // GET INITIAL
+            // ==========================================
+
+            function getStudentInitial(name) {
+
+                if (
+                    !name ||
+                    String(name).trim() === ""
+                ) {
+
+                    return "S";
+
+                }
+
+
+                return String(name)
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+            }
+
+
+            // ==========================================
+            // SET PROFILE NAME
+            // ==========================================
+
+            function setStudentName(name) {
+
+                if (!topbarName)
+                    return;
+
+
+                topbarName.textContent =
+                    name || "Student";
+
+            }
+
+
+            // ==========================================
+            // SET PROFILE AVATAR
+            // ==========================================
+
+            function setStudentAvatar(
+                profileImage,
+                name
+            ) {
+
+                if (!topbarAvatar)
+                    return;
+
+
+                const initial =
+                    getStudentInitial(name);
+
+
+                topbarAvatar.innerHTML =
+                    "";
+
+
+                if (
+                    profileImage &&
+                    String(profileImage).trim() !== ""
+                ) {
+
+                    const image =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    image.src =
+                        profileImage;
+
+
+                    image.alt =
+                        "Student Profile";
+
+
+                    image.className =
+                        "topbar-profile-image";
+
+
+                    image.onerror =
+                        function() {
+
+                            topbarAvatar.innerHTML =
+                                initial;
+
+                        };
+
+
+                    topbarAvatar.appendChild(
+                        image
+                    );
+
+                }
+                else {
+
+                    topbarAvatar.textContent =
+                        initial;
+
+                }
+
+            }
+
+
+            // ==========================================
+            // LOAD LOCAL PROFILE DATA
+            // ==========================================
+
+            if (layoutUser) {
+
+                const name =
+                    layoutUser.name ||
+                    layoutUser.Name ||
+                    "Student";
+
+
+                const profileImage =
+                    layoutUser.profileImage ||
+                    layoutUser.ProfileImage ||
+                    "";
+
+
+                setStudentName(
+                    name
+                );
+
+
+                setStudentAvatar(
+                    profileImage,
+                    name
+                );
+
+            }
+
+
+            // ==========================================
+            // LOAD LATEST PROFILE FROM DATABASE
+            // DASHBOARD ONLY
+            // ==========================================
+
+            async function loadStudentProfile() {
+
+                if (!topbarName || !topbarAvatar)
+                    return;
+
+
+                const token =
+                    localStorage.getItem(
+                        "jwtToken"
+                    );
+
+
+                if (!token)
+                    return;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/students/me",
+                            {
+                                method: "GET",
+
+                                headers: {
+                                    "Authorization":
+                                        "Bearer " +
+                                        token
+                                }
+                            }
+                        );
+
+
+                    if (!response.ok)
+                        return;
+
+
+                    const student =
+                        await response.json();
+
+
+                    const name =
+                        student.name ||
+                        student.Name ||
+                        "Student";
+
+
+                    const profileImage =
+                        student.profileImage ||
+                        student.ProfileImage ||
+                        "";
+
+
+                    setStudentName(
+                        name
+                    );
+
+
+                    setStudentAvatar(
+                        profileImage,
+                        name
+                    );
+
+
+                    // Keep existing student ID
+                    // functionality intact.
+
+                    if (student.id) {
+
+                        localStorage.setItem(
+                            "studentId",
+                            student.id
+                        );
+
+                    }
+
+
+                    // Synchronize local storage.
+
+                    if (layoutUser) {
+
+                        layoutUser.name =
+                            name;
+
+
+                        layoutUser.email =
+                            student.email ||
+                            student.Email ||
+                            layoutUser.email ||
+                            "";
+
+
+                        layoutUser.profileImage =
+                            profileImage;
+
+
+                        localStorage.setItem(
+                            "loggedInUser",
+                            JSON.stringify(
+                                layoutUser
+                            )
+                        );
+
+                    }
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Unable to load student profile:",
+                        error
+                    );
+
+                }
+
+            }
+
+
+            loadStudentProfile();
+
+
+            // ==========================================
+            // PROFILE DROPDOWN
+            // ==========================================
+
+            if (
+                profileToggle &&
+                profileDropdown
+            ) {
+
+                profileToggle.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+
+                        profileDropdown.classList.toggle(
+                            "show"
+                        );
+
+                    }
+                );
+
+
+                document.addEventListener(
+                    "click",
+                    function(event) {
+
+                        if (
+                            !profileToggle.contains(
+                                event.target
+                            ) &&
+                            !profileDropdown.contains(
+                                event.target
+                            )
+                        ) {
+
+                            profileDropdown.classList.remove(
+                                "show"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            // ==========================================
+            // LOGOUT
+            // ==========================================
+
+            async function studentLogout() {
+
+                const token =
+                    localStorage.getItem(
+                        "jwtToken"
+                    );
+
+
+                try {
+
+                    await fetch(
+                        "/api/auth/logout",
+                        {
+                            method: "POST",
+
+                            headers: token
+                                ? {
+                                    "Authorization":
+                                        "Bearer " +
+                                        token
+                                }
+                                : {}
+                        }
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Logout API error:",
+                        error
+                    );
+
+                }
+                finally {
+
+                    localStorage.removeItem(
+                        "jwtToken"
+                    );
+
+
+                    localStorage.removeItem(
+                        "loggedInUser"
+                    );
+
+
+                    localStorage.removeItem(
+                        "studentId"
+                    );
+
+
+                    window.location.href =
+                        "/Auth/Login";
+
+                }
+
+            }
+
+
+            // ==========================================
+            // EXISTING SIDEBAR LOGOUT
+            // ==========================================
+
+            const logoutLink =
+                document.getElementById(
+                    "logoutLink"
+                );
+
+
+            if (logoutLink) {
+
+                logoutLink.addEventListener(
+                    "click",
+                    async function(event) {
+
+                        event.preventDefault();
+
+                        await studentLogout();
+
+                    }
+                );
+
+            }
+
+
+            // ==========================================
+            // PROFILE DROPDOWN LOGOUT
+            // ==========================================
+
+            if (profileLogoutButton) {
+
+                profileLogoutButton.addEventListener(
+                    "click",
+                    async function(event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+                        await studentLogout();
+
+                    }
+                );
+
+            }
+
+    </script>
+
+
+    @RenderSection(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>

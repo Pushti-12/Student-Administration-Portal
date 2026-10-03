@@ -1,0 +1,334 @@
+﻿@{
+    ViewData["Title"] = "My Fees";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-kicker">
+            MY ACADEMICS
+        </span>
+
+        <h1>
+            My Fees
+        </h1>
+
+        <p>
+            View your fee payments and payment status.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="summary-cards">
+
+    <div class="summary-box">
+
+        <span>
+            Total Amount
+        </span>
+
+        <strong id="totalAmount">
+            ₹0
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Paid
+        </span>
+
+        <strong id="paidAmount">
+            ₹0
+        </strong>
+
+    </div>
+
+
+    <div class="summary-box">
+
+        <span>
+            Pending
+        </span>
+
+        <strong id="pendingAmount">
+            ₹0
+        </strong>
+
+    </div>
+
+</div>
+
+
+<section class="card">
+
+    <div class="table-wrap">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Payment Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="body">
+
+                <tr>
+
+                    <td colspan="3"
+                        class="loading">
+
+                        Loading fee records...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("jwtToken");
+
+
+    const user =
+        JSON.parse(
+            localStorage.getItem(
+                "loggedInUser"
+            ) || "null"
+        );
+
+
+    if (
+        !token ||
+        !user ||
+        user.role.toUpperCase() !== "STUDENT"
+    ) {
+        location.href = "/";
+    }
+
+
+    async function loadFees() {
+
+        try {
+
+            const studentResponse =
+                await fetch(
+                    "/api/students/me",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!studentResponse.ok) {
+                throw new Error();
+            }
+
+
+            const student =
+                await studentResponse.json();
+
+
+            localStorage.setItem(
+                "studentId",
+                student.id
+            );
+
+
+            const response =
+                await fetch(
+                    `/api/fees/student/${student.id}`,
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+
+            const fees =
+                await response.json();
+
+
+            const total =
+                fees.reduce(
+                    (sum, f) =>
+                        sum +
+                        Number(f.amount),
+                    0
+                );
+
+
+            const paid =
+                fees
+                    .filter(
+                        f =>
+                            String(f.status)
+                                .toUpperCase() ===
+                            "PAID"
+                    )
+                    .reduce(
+                        (sum, f) =>
+                            sum +
+                            Number(f.amount),
+                        0
+                    );
+
+
+            const pending =
+                total - paid;
+
+
+            document.getElementById(
+                "totalAmount"
+            ).textContent =
+                `₹${total.toFixed(2)}`;
+
+
+            document.getElementById(
+                "paidAmount"
+            ).textContent =
+                `₹${paid.toFixed(2)}`;
+
+
+            document.getElementById(
+                "pendingAmount"
+            ).textContent =
+                `₹${pending.toFixed(2)}`;
+
+
+            const body =
+                document.getElementById(
+                    "body"
+                );
+
+
+            if (!fees.length) {
+
+                body.innerHTML = `
+                        <tr>
+                            <td colspan="3"
+                                class="empty">
+                                No fee records found.
+                            </td>
+                        </tr>
+                    `;
+
+                return;
+
+            }
+
+
+            body.innerHTML =
+                fees.map(
+                    f => {
+
+                        const status =
+                            String(
+                                f.status
+                            ).toUpperCase();
+
+
+                        return `
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            ₹${Number(
+                            f.amount
+                        ).toFixed(2)}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        ${new Date(
+                            f.paymentDate
+                        ).toLocaleDateString()}
+                                    </td>
+
+                                    <td>
+
+                                        <span class="
+                                            badge
+                                            ${status === "PAID"
+                                ? "badge-paid"
+                                : "badge-pending"}
+                                        ">
+
+                                            ${status}
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                    }
+                ).join("");
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "body"
+            ).innerHTML = `
+                    <tr>
+                        <td colspan="3"
+                            class="error">
+                            Unable to load fee records.
+                        </td>
+                    </tr>
+                `;
+
+        }
+
+    }
+
+
+    loadFees();
+
+</script>

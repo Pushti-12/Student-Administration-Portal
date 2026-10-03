@@ -1,0 +1,216 @@
+﻿@{
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Student Management System</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css" />
+
+    <link rel="stylesheet"
+          href="~/css/dashboard.css" />
+</head>
+
+<body>
+
+    <div class="dashboard-wrapper">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="dashboard-sidebar">
+
+            <div class="sidebar-logo">
+
+                <div class="logo-icon">
+                    🎓
+                </div>
+
+                <div>
+                    <h2>Student System</h2>
+                    <span>Admin Panel</span>
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <ul>
+
+                    <li class="nav-heading">
+                        MAIN MENU
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Dashboard"
+                           class="nav-link @(currentPath == "/admin/dashboard" ? "active" : "")">
+
+                            <span class="nav-icon">▣</span>
+                            <span>Dashboard</span>
+
+                        </a>
+                    </li>
+
+
+                    <li class="nav-heading">
+                        MANAGEMENT
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Students"
+                           class="nav-link @(currentPath.StartsWith("/admin/students") ? "active" : "")">
+
+                            <span class="nav-icon">👨‍🎓</span>
+                            <span>Students</span>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Teachers"
+                           class="nav-link @(currentPath.StartsWith("/admin/teachers") ? "active" : "")">
+
+                            <span class="nav-icon">👨‍🏫</span>
+                            <span>Teachers</span>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Courses"
+                           class="nav-link @(currentPath.StartsWith("/admin/courses") ? "active" : "")">
+
+                            <span class="nav-icon">📚</span>
+                            <span>Courses</span>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Attendance"
+                           class="nav-link @(currentPath.StartsWith("/admin/attendance") ? "active" : "")">
+
+                            <span class="nav-icon">✓</span>
+                            <span>Attendance</span>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Marks"
+                           class="nav-link @(currentPath.StartsWith("/admin/marks") ? "active" : "")">
+
+                            <span class="nav-icon">📝</span>
+                            <span>Marks</span>
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/Admin/Fees"
+                           class="nav-link @(currentPath.StartsWith("/admin/fees") ? "active" : "")">
+
+                            <span class="nav-icon">💳</span>
+                            <span>Fees</span>
+
+                        </a>
+                    </li>
+
+
+                    <li class="nav-heading">
+                        ACCOUNT
+                    </li>
+
+                    <li>
+                        <a href="#" id="logoutLink"
+                           class="nav-link">
+
+                            <span class="nav-icon">🚪</span>
+                            <span>Logout</span>
+
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- ================= MAIN CONTENT ================= -->
+
+        <main class="dashboard-main">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+            document
+                .getElementById("logoutLink")
+                .addEventListener("click", async function (event) {
+
+                    event.preventDefault();
+
+                    const token =
+                        localStorage.getItem("jwtToken");
+
+                    try {
+
+                        await fetch("/api/auth/logout", {
+
+                            method: "POST",
+
+                            headers: token
+                                ? {
+                                    "Authorization":
+                                        "Bearer " + token
+                                }
+                                : {}
+
+                        });
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Logout error:",
+                            error
+                        );
+
+                    }
+                    finally {
+
+                        localStorage.removeItem("jwtToken");
+                        localStorage.removeItem("loggedInUser");
+                        localStorage.removeItem("studentId");
+
+                        window.location.href =
+                            "/Auth/Login";
+
+                    }
+
+                });
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

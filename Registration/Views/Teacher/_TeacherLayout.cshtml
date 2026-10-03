@@ -1,0 +1,519 @@
+﻿@{
+    var currentPath = Context.Request.Path.Value?.ToLowerInvariant() ?? "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Student Management System</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/teacher-dashboard.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="teacher-layout">
+
+        <!-- =====================================================
+             TEACHER SIDEBAR
+             ===================================================== -->
+        <aside class="teacher-sidebar">
+
+            <div class="teacher-sidebar-logo">
+                <div class="teacher-logo-icon">🎓</div>
+
+                <div>
+                    <h2>Student System</h2>
+                    <span>Teacher Panel</span>
+                </div>
+            </div>
+
+            <nav class="teacher-sidebar-nav">
+
+                <div class="teacher-nav-heading">MAIN MENU</div>
+
+                <a href="/Teacher/Dashboard"
+                   class="teacher-nav-link @(currentPath == "/teacher/dashboard" ? "active" : "")">
+                    <span class="teacher-nav-icon">▣</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="teacher-nav-heading">TEACHING</div>
+
+                <a href="/Teacher/Courses"
+                   class="teacher-nav-link @(currentPath.StartsWith("/teacher/courses") ? "active" : "")">
+                    <span class="teacher-nav-icon">📚</span>
+                    <span>My Courses</span>
+                </a>
+
+                <a href="/Teacher/Students"
+                   class="teacher-nav-link @(currentPath.StartsWith("/teacher/students") ? "active" : "")">
+                    <span class="teacher-nav-icon">👨‍🎓</span>
+                    <span>Students</span>
+                </a>
+
+                <a href="/Teacher/Attendance"
+                   class="teacher-nav-link @(currentPath.StartsWith("/teacher/attendance") ? "active" : "")">
+                    <span class="teacher-nav-icon">✓</span>
+                    <span>Attendance</span>
+                </a>
+
+                <a href="/Teacher/Marks"
+                   class="teacher-nav-link @(currentPath.StartsWith("/teacher/marks") ? "active" : "")">
+                    <span class="teacher-nav-icon">📝</span>
+                    <span>Marks</span>
+                </a>
+
+                <div class="teacher-nav-heading">ACCOUNT</div>
+
+                <!-- Existing sidebar logout is preserved -->
+                <a href="#"
+                   id="logoutLink"
+                   class="teacher-nav-link">
+                    <span class="teacher-nav-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+
+            </nav>
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN AREA
+             ===================================================== -->
+        <main class="teacher-main">
+
+            <!-- =================================================
+                 TOP RIGHT PROFILE
+                 ================================================= -->
+            <header class="teacher-topbar">
+
+                <div class="teacher-profile-wrapper">
+
+                    <button type="button"
+                            id="profileToggle"
+                            class="teacher-profile-toggle"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+
+                        <span id="topbarAvatar"
+                              class="teacher-topbar-avatar">T</span>
+
+                        <span id="topbarName"
+                              class="teacher-topbar-name">Teacher</span>
+
+                        <span class="teacher-profile-arrow">▼</span>
+
+                    </button>
+
+                    <div id="profileDropdown"
+                         class="teacher-profile-dropdown"
+                         aria-hidden="true">
+
+                        <a href="/Teacher/Profile"
+                           class="teacher-profile-option">
+                            <span class="teacher-profile-icon">👤</span>
+                            <span>Profile</span>
+                        </a>
+
+                        <button type="button"
+                                id="profileLogoutButton"
+                                class="teacher-profile-option logout-option">
+                            <span class="teacher-profile-icon">🚪</span>
+                            <span>Logout</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- Page-specific content -->
+            <section class="teacher-page-content">
+                @RenderBody()
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+            /*
+             * IMPORTANT:
+             * This entire layout script is inside an IIFE.
+             * Teacher pages also have variables named `token`, `user`, etc.
+             * Keeping this code scoped prevents JavaScript redeclaration errors.
+             */
+            (function () {
+                "use strict";
+
+                const profileToggle =
+                    document.getElementById("profileToggle");
+
+                const profileDropdown =
+                    document.getElementById("profileDropdown");
+
+                const profileLogoutButton =
+                    document.getElementById("profileLogoutButton");
+
+                const logoutLink =
+                    document.getElementById("logoutLink");
+
+                const topbarName =
+                    document.getElementById("topbarName");
+
+                const topbarAvatar =
+                    document.getElementById("topbarAvatar");
+
+
+                /* =================================================
+                   LOGGED-IN USER
+                   ================================================= */
+                let loggedInUser = null;
+
+                try {
+                    const storedUser =
+                        localStorage.getItem("loggedInUser");
+
+                    if (storedUser) {
+                        loggedInUser = JSON.parse(storedUser);
+                    }
+                }
+                catch (error) {
+                    console.error(
+                        "Unable to read logged-in user:",
+                        error
+                    );
+                }
+
+
+                /* =================================================
+                   NAME
+                   ================================================= */
+                function setTeacherName(name) {
+                    if (!topbarName) {
+                        return;
+                    }
+
+                    const safeName =
+                        name && String(name).trim() !== ""
+                            ? String(name).trim()
+                            : "Teacher";
+
+                    topbarName.textContent = safeName;
+                }
+
+
+                /* =================================================
+                   AVATAR
+                   ================================================= */
+                function setTeacherAvatar(profileImage, name) {
+                    if (!topbarAvatar) {
+                        return;
+                    }
+
+                    const safeName =
+                        name && String(name).trim() !== ""
+                            ? String(name).trim()
+                            : "Teacher";
+
+                    const firstLetter =
+                        safeName.charAt(0).toUpperCase();
+
+
+                    if (
+                        profileImage &&
+                        String(profileImage).trim() !== ""
+                    ) {
+                        topbarAvatar.innerHTML = "";
+
+                        const image =
+                            document.createElement("img");
+
+                        image.src = String(profileImage);
+                        image.alt = "Teacher Profile";
+
+                        image.onerror = function () {
+                            topbarAvatar.textContent = firstLetter;
+                        };
+
+                        topbarAvatar.appendChild(image);
+                    }
+                    else {
+                        topbarAvatar.textContent = firstLetter;
+                    }
+                }
+
+
+                /* =================================================
+                   INITIAL LOCAL DATA
+                   ================================================= */
+                if (loggedInUser) {
+                    const name =
+                        loggedInUser.name ||
+                        loggedInUser.Name ||
+                        "Teacher";
+
+                    const profileImage =
+                        loggedInUser.profileImage ||
+                        loggedInUser.ProfileImage ||
+                        "";
+
+                    setTeacherName(name);
+                    setTeacherAvatar(profileImage, name);
+                }
+
+
+                /* =================================================
+                   GET LATEST TEACHER DATA FROM DATABASE
+                   ================================================= */
+                async function loadTeacherProfile() {
+                    const currentToken =
+                        localStorage.getItem("jwtToken");
+
+                    if (!currentToken) {
+                        return;
+                    }
+
+                    try {
+                        const response =
+                            await fetch(
+                                "/api/teachers/me",
+                                {
+                                    method: "GET",
+                                    headers: {
+                                        "Authorization":
+                                            "Bearer " + currentToken
+                                    }
+                                }
+                            );
+
+                        if (!response.ok) {
+                            return;
+                        }
+
+                        const teacher =
+                            await response.json();
+
+                        const teacherName =
+                            teacher.name ||
+                            teacher.Name ||
+                            "Teacher";
+
+                        const profileImage =
+                            teacher.profileImage ||
+                            teacher.ProfileImage ||
+                            "";
+
+                        setTeacherName(teacherName);
+                        setTeacherAvatar(profileImage, teacherName);
+
+                        if (loggedInUser) {
+                            loggedInUser.name = teacherName;
+                            loggedInUser.profileImage = profileImage;
+
+                            localStorage.setItem(
+                                "loggedInUser",
+                                JSON.stringify(loggedInUser)
+                            );
+                        }
+                    }
+                    catch (error) {
+                        console.error(
+                            "Unable to load teacher profile:",
+                            error
+                        );
+                    }
+                }
+
+                loadTeacherProfile();
+
+
+                /* =================================================
+                   PROFILE DROPDOWN
+                   ================================================= */
+                function openProfileDropdown() {
+                    if (!profileDropdown) {
+                        return;
+                    }
+
+                    profileDropdown.classList.add("show");
+                    profileDropdown.setAttribute("aria-hidden", "false");
+
+                    if (profileToggle) {
+                        profileToggle.setAttribute(
+                            "aria-expanded",
+                            "true"
+                        );
+                    }
+                }
+
+
+                function closeProfileDropdown() {
+                    if (!profileDropdown) {
+                        return;
+                    }
+
+                    profileDropdown.classList.remove("show");
+                    profileDropdown.setAttribute("aria-hidden", "true");
+
+                    if (profileToggle) {
+                        profileToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+                    }
+                }
+
+
+                function toggleProfileDropdown(event) {
+                    if (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    if (!profileDropdown) {
+                        return;
+                    }
+
+                    if (
+                        profileDropdown.classList.contains("show")
+                    ) {
+                        closeProfileDropdown();
+                    }
+                    else {
+                        openProfileDropdown();
+                    }
+                }
+
+
+                if (profileToggle) {
+                    profileToggle.addEventListener(
+                        "click",
+                        toggleProfileDropdown
+                    );
+                }
+
+
+                /* =================================================
+                   CLICK OUTSIDE = CLOSE
+                   ================================================= */
+                document.addEventListener(
+                    "click",
+                    function (event) {
+                        if (!profileDropdown) {
+                            return;
+                        }
+
+                        if (
+                            profileToggle &&
+                            profileToggle.contains(event.target)
+                        ) {
+                            return;
+                        }
+
+                        if (
+                            profileDropdown.contains(event.target)
+                        ) {
+                            return;
+                        }
+
+                        closeProfileDropdown();
+                    }
+                );
+
+
+                /* =================================================
+                   ESCAPE = CLOSE
+                   ================================================= */
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+                        if (event.key === "Escape") {
+                            closeProfileDropdown();
+                        }
+                    }
+                );
+
+
+                /* =================================================
+                   COMMON LOGOUT
+                   ================================================= */
+                async function teacherLogout() {
+                    const currentToken =
+                        localStorage.getItem("jwtToken");
+
+                    try {
+                        await fetch(
+                            "/api/auth/logout",
+                            {
+                                method: "POST",
+                                headers: currentToken
+                                    ? {
+                                        "Authorization":
+                                            "Bearer " + currentToken
+                                    }
+                                    : {}
+                            }
+                        );
+                    }
+                    catch (error) {
+                        console.error(
+                            "Logout API error:",
+                            error
+                        );
+                    }
+                    finally {
+                        localStorage.removeItem("jwtToken");
+                        localStorage.removeItem("loggedInUser");
+                        localStorage.removeItem("teacherId");
+
+                        window.location.href = "/Auth/Login";
+                    }
+                }
+
+
+                /* =================================================
+                   SIDEBAR LOGOUT
+                   ================================================= */
+                if (logoutLink) {
+                    logoutLink.addEventListener(
+                        "click",
+                        async function (event) {
+                            event.preventDefault();
+                            await teacherLogout();
+                        }
+                    );
+                }
+
+
+                /* =================================================
+                   PROFILE DROPDOWN LOGOUT
+                   ================================================= */
+                if (profileLogoutButton) {
+                    profileLogoutButton.addEventListener(
+                        "click",
+                        async function (event) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            await teacherLogout();
+                        }
+                    );
+                }
+
+            })();
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
